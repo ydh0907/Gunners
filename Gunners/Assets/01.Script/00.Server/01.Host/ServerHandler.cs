@@ -18,15 +18,15 @@ public class ServerHandler : MonoBehaviour
     public Thread readThread = null;
     public Thread writeThread = null;
 
-    public Queue<Socket> readQueue = null;
-    public Queue<Socket> writeQueue = null;
+    public Queue<Packet> readQueue = null;
+    public Queue<Packet> writeQueue = null;
 
     public bool IsThreadWork = true;
     public bool IsComAble = false;
     public object locking = new();
     private void Awake() {
-        if(handler != null) Destroy(gameObject);
-        handler = this;
+        if(handler == null) handler = this;
+        else gameObject.SetActive(false);
         Connect();
     }
     private void Connect(){
@@ -35,7 +35,7 @@ public class ServerHandler : MonoBehaviour
         tcpListener = new TcpListener(IPAddress.Any, 9070);
         readThread = new(new ThreadStart(Connecting));
     }
-    private void OnDisable() {
+    private void OnDestroy() {
         Disconnect();
         handler = null;
     }
@@ -83,7 +83,7 @@ public class ServerHandler : MonoBehaviour
             while(IsComAble){
                 byte[] message = new byte[64];
                 if(ns.CanRead) ns.Read(message);
-                lock(locking) readQueue.Enqueue(JsonUtility.FromJson<Socket>(Encoding.ASCII.GetString(message)));
+                lock(locking) readQueue.Enqueue(JsonUtility.FromJson<Packet>(Encoding.ASCII.GetString(message)));
             }
         }
     }

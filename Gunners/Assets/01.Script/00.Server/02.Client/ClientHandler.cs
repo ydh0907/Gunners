@@ -17,15 +17,15 @@ public class ClientHandler : MonoBehaviour
     public Thread readThread = null;
     public Thread writeThread = null;
 
-    public Queue<Socket> readQueue = null;
-    public Queue<Socket> writeQueue = null;
+    public Queue<Packet> readQueue = null;
+    public Queue<Packet> writeQueue = null;
 
     public bool IsThreadWork = true;
     public bool IsComAble = false;
     public object locking = new();
     private void Awake() {
-        if(handler != null) Destroy(gameObject);
-        handler = this;
+        if(handler == null) handler = this;
+        else gameObject.SetActive(false);
         Connect();
     }
     private void Connect(){
@@ -33,7 +33,7 @@ public class ClientHandler : MonoBehaviour
         IsComAble = false;
         readThread = new(new ThreadStart(Connecting));
     }
-    private void OnDisable() {
+    private void OnDestroy() {
         Disconnect();
         handler = null;
     }
@@ -53,7 +53,7 @@ public class ClientHandler : MonoBehaviour
         tcpClient = null;
     }
     private void Connecting(){
-        tcpClient = new TcpClient(TcpInterface.handler.HostIPAddress, 9070);
+        tcpClient = new TcpClient(TcpInterface.handler.RoomNumber, 9070);
         if(!tcpClient.Connected){
             Disconnect();
             SceneManager.LoadScene(0);
@@ -79,7 +79,7 @@ public class ClientHandler : MonoBehaviour
             while(IsComAble){
                 byte[] message = new byte[64];
                 if(ns.CanRead) ns.Read(message);
-                lock(locking) readQueue.Enqueue(JsonUtility.FromJson<Socket>(Encoding.ASCII.GetString(message)));
+                lock(locking) readQueue.Enqueue(JsonUtility.FromJson<Packet>(Encoding.ASCII.GetString(message)));
             }
         }
     }

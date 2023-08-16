@@ -10,7 +10,7 @@ public class ConnectUI : MonoBehaviour
     }
     public void BeClient(){
         TcpInterface.handler.IsServer = false;
-        TcpInterface.handler.HostIPAddress = FindFirstObjectByType<TMP_InputField>().text;
+        TcpInterface.handler.RoomNumber = FindFirstObjectByType<TMP_InputField>().text;
         SceneManager.LoadScene(1);
     }
 }
