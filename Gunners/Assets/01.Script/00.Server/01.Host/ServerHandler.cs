@@ -68,11 +68,11 @@ public class ServerHandler : MonoBehaviour
         readThread = new(new ThreadStart(Reading));
         readThread.IsBackground = true;
         readThread.Start();
+        IsComAble = true;
     }
     private IEnumerator WaitConnect(){
         yield return new WaitUntil(() => IsComAble);
         StartCoroutine(Writing());
-        IsComAble = true;
         gameObject.AddComponent<TcpInterface>().Init(true);
     }
     private void Update() {
@@ -85,7 +85,7 @@ public class ServerHandler : MonoBehaviour
     private void Reading(){
         while(true){
             while(IsComAble){
-                byte[] message = new byte[128];
+                byte[] message = new byte[256];
                 ns.Read(message);
                 lock(locking) readQueue.Enqueue(JsonUtility.FromJson<Packet>(Encoding.ASCII.GetString(message)));
             }
