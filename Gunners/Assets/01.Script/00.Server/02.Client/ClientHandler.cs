@@ -15,10 +15,12 @@ public class ClientHandler : MonoBehaviour
     NetworkStream ns = null;
 
     public Thread readThread = null;
-    public Thread writeThread = null;
+    public Thread connectThread = null;
 
-    public Queue<Packet> readQueue = null;
-    public Queue<Packet> writeQueue = null;
+    public Queue<Packet> readQueue = new();
+    public Queue<Packet> writeQueue = new();
+
+    public string RoomNumber;
 
     public bool IsThreadWork = true;
     public bool IsComAble = false;
@@ -26,12 +28,17 @@ public class ClientHandler : MonoBehaviour
     private void Awake() {
         if(handler == null) handler = this;
         else gameObject.SetActive(false);
+        DontDestroyOnLoad(gameObject);
         Connect();
     }
     private void Connect(){
         Disconnect();
         IsComAble = false;
-        readThread = new(new ThreadStart(Connecting));
+        RoomNumber = ConnectInfo.info.RoomNumber;
+        connectThread = new(new ThreadStart(Connecting));
+        connectThread.IsBackground = true;
+        connectThread.Start();
+        StartCoroutine(WaitConnect());
     }
     private void OnDestroy() {
         Disconnect();
@@ -42,56 +49,58 @@ public class ClientHandler : MonoBehaviour
         IsComAble = false;
         readQueue?.Clear();
         writeQueue?.Clear();
-        readQueue = null;
-        writeQueue = null;
-        readThread?.Join();
-        readThread?.Abort();
-        readThread = null;
         ns?.Close();
         ns = null;
         tcpClient?.Close();
         tcpClient = null;
     }
     private void Connecting(){
-        tcpClient = new TcpClient(TcpInterface.handler.RoomNumber, 9070);
+        tcpClient = new TcpClient(ConnectInfo.info.RoomNumber, 9070);
         if(!tcpClient.Connected){
             Disconnect();
             SceneManager.LoadScene(0);
         }
+        Debug.Log(tcpClient.Connected);
         ns = tcpClient.GetStream();
         IsThreadWork = true;
-        readQueue = new();
-        writeQueue = new();
         readThread = new(new ThreadStart(Reading));
         readThread.IsBackground = true;
         readThread.Start();
+    }
+    private IEnumerator WaitConnect(){
+        yield return new WaitUntil(() => IsComAble);
         StartCoroutine(Writing());
         IsComAble = true;
+        gameObject.AddComponent<TcpInterface>().Init(true);
     }
     private void Update() {
+        if(tcpClient != null)
         if(!tcpClient.Connected && IsComAble){
             Disconnect();
             SceneManager.LoadScene(0);
         }
     }
     private void Reading(){
-        while(IsThreadWork){
+        while(true){
             while(IsComAble){
-                byte[] message = new byte[64];
-                if(ns.CanRead) ns.Read(message);
+                byte[] message = new byte[128];
+                ns.Read(message);
                 lock(locking) readQueue.Enqueue(JsonUtility.FromJson<Packet>(Encoding.ASCII.GetString(message)));
             }
+            Thread.Sleep(10);
+            if(!IsThreadWork) break;
         }
     }
     private IEnumerator Writing(){
-        while(IsThreadWork){
+        while(true){
             while(IsComAble){
-                while(writeQueue.Count > 0 && ns.CanWrite){
+                while(writeQueue.Count > 0){
                     lock(locking) ns.Write(Encoding.ASCII.GetBytes(JsonUtility.ToJson(writeQueue.Dequeue())));
                 }
                 yield return null;
             }
             yield return null;
+            if(!IsThreadWork) break;
         }
     }
 }
