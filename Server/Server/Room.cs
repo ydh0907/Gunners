@@ -11,12 +11,27 @@ namespace Server
 {
     internal class Room
     {
-        public Socket player1;
-        public Socket player2;
-        public Room(Socket player1, Socket player2)
+        public Socket host;
+        public Socket client;
+        public int num;
+        public Room(Socket host, int num)
         {
-            this.player1 = player1;
-            this.player2 = player2;
+            this.host = host;
+            this.num = num;
+        }
+        public void StartGame(Socket client)
+        {
+            this.client = client;
+        }
+    }
+    internal class Player
+    {
+        public Socket player;
+        public int num;
+        public Player(Socket player, int num)
+        {
+            this.player = player;
+            this.num = num;
         }
     }
 }
