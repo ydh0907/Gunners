@@ -12,7 +12,7 @@ namespace Server
     internal class Program
     {
         static Queue<Socket> sockets = new();
-        static Queue<Player> players = new();
+        static Queue<Play> players = new();
         static Dictionary<int, Socket> rooms = new();
 
         static bool isListen = true;
@@ -73,11 +73,11 @@ namespace Server
         {
             while (true)
             {
+                Socket socket = sockets.Dequeue();
                 try
                 {
                     if(sockets.Count > 0)
                     {
-                        Socket socket = sockets.Dequeue();
                         byte[] buffer = new byte[1024];
                         socket.Receive(buffer);
 
@@ -86,6 +86,7 @@ namespace Server
                 catch(Exception err)
                 {
                     Console.WriteLine("Error On CreateClientPlayer : " + err.Message);
+                    DisConnectClient(socket);
                     continue;
                 }
             }

@@ -28,5 +28,10 @@ namespace Server
             num = 0;
             this.state = state;
         }
+        public Packet(PacketState state , int num)
+        {
+            this.state = state;
+            this.num = num;
+        }
     }
 }
