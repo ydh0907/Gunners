@@ -12,7 +12,6 @@ namespace Server
     internal class Program
     {
         static Queue<Socket> sockets = new();
-        static Queue<Play> players = new();
         static Dictionary<int, Socket> rooms = new();
 
         static bool isListen = true;
@@ -79,8 +78,9 @@ namespace Server
                     if(sockets.Count > 0)
                     {
                         byte[] buffer = new byte[1024];
-                        socket.Receive(buffer);
+                        int receivedSize = socket.Receive(buffer);
 
+                        
                     }
                 }
                 catch(Exception err)
