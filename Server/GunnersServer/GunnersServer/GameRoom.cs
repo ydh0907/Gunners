@@ -13,10 +13,16 @@ namespace GunnersServer
         public JobQueue jobQueue = new JobQueue();
         public Queue<Tuple<ushort, Packet>> packetQueue = new();
 
+        public bool ready = false;
+        public bool end = false;
+
         public void AddJob(Action job) => jobQueue.Push(job);
 
         public void Flush()
         {
+            if (!(host.Active == 1 && enterer.Active == 1))
+                DestroyRoom();
+
             if(host.Active + enterer.Active == 2)
             {
                 while(packetQueue.Count > 0)
@@ -30,6 +36,15 @@ namespace GunnersServer
                 }
             }
             else Console.WriteLine("[Room] User not Found - Flush");
+        }
+
+        public void Broadcast(Packet packet, ushort id)
+        {
+            if (id == host.userID)
+                enterer.Send(packet.Serialize());
+            else if (id == enterer.userID)
+                host.Send(packet.Serialize());
+            else Console.WriteLine($"[Room] User not Found - Broadcast");
         }
 
         public Session GetUser(ushort id)
@@ -54,9 +69,9 @@ namespace GunnersServer
 
         public void DestroyRoom()
         {
+            host.Reset();
+            enterer.Reset();
             Program.rooms.Remove(roomID);
-
-            // send exit packet
         }
 
         public GameRoom(ushort id)

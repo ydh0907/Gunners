@@ -15,8 +15,26 @@ namespace GunnersServer
         private static ushort nextUserID = 0;
         private static ushort nextRoomID = 0;
 
-        public static ushort NextUserID => nextUserID++;
-        public static ushort NextRoomID => nextRoomID++;
+        public static ushort NextUserID
+        {
+            get
+            {
+                if (nextUserID == ushort.MaxValue) nextUserID = ushort.MinValue;
+                while(users.ContainsKey(nextUserID)) nextUserID++;
+                return nextUserID;
+            }
+        }
+        public static ushort NextRoomID
+        {
+            get
+            {
+                if(nextRoomID == ushort.MaxValue) nextRoomID = ushort.MinValue;
+                while(rooms.ContainsKey(nextRoomID)) nextRoomID++;
+                return nextRoomID;
+            }
+        }
+
+        public static object matchingLocker = new();
 
         static void Main(string[] args)
         {
@@ -38,9 +56,9 @@ namespace GunnersServer
                 currentTime = Environment.TickCount;
                 if(currentTime - lastFlushTime > delay)
                 {
-                    for(ushort i = 0; i < rooms.Count; i++)
+                    foreach(GameRoom room in rooms.Values) 
                     {
-                        rooms[i].AddJob(() => rooms[i].Flush());
+                        room.Flush();
                     }
                     lastFlushTime = currentTime;
                 }
@@ -56,18 +74,21 @@ namespace GunnersServer
 
         static void EnterRoom(ClientSession user)
         {
-            if(matchingRoom.host == null)
+            lock(matchingLocker)
             {
-                matchingRoom.host = user;
-            }
-            else
-            {
-                matchingRoom.enterer = user;
-                rooms.Add(matchingRoom.roomID, matchingRoom);
+                if(matchingRoom.host == null)
+                {
+                    matchingRoom.host = user;
+                }
+                else
+                {
+                    matchingRoom.enterer = user;
+                    rooms.Add(matchingRoom.roomID, matchingRoom);
 
-                Console.WriteLine($"[Room] {matchingRoom.host.userID} : {matchingRoom.host.endPoint} and {matchingRoom.enterer.userID} : {matchingRoom.enterer.endPoint} is Matching");
+                    Console.WriteLine($"[Room] {matchingRoom.host.userID} : {matchingRoom.host.endPoint} and {matchingRoom.enterer.userID} : {matchingRoom.enterer.endPoint} is Matching");
 
-                matchingRoom = new(NextRoomID);
+                    matchingRoom = new(NextRoomID);
+                }
             }
         }
     }

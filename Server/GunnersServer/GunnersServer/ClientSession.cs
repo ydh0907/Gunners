@@ -9,14 +9,23 @@ namespace GunnersServer
         public EndPoint endPoint = null;
 
         public ushort userID;
-        public string nickname = "";
+        public ushort roomID;
+        public string nickname = null;
 
         public float x;
         public float y;
         public float z;
 
-        public ushort weaponID;
+        public ushort hp;
         public ushort agent;
+        public ushort weaponID;
+
+        public void Reset()
+        {
+            x = 0; y = 0;
+            agent = 0; weaponID = 0;
+            roomID = ushort.MaxValue;
+        }
 
         public override void OnConnected(EndPoint endPoint)
         {
@@ -32,7 +41,7 @@ namespace GunnersServer
         public override void OnPacketReceived(ArraySegment<byte> buffer)
         {
             Console.WriteLine($"[Session] {buffer.Count} of byte Received");
-            _
+            PacketManager.Instance.CreatePacket(buffer);
         }
 
         public override void OnSent(int length)
