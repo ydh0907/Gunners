@@ -3,11 +3,9 @@ using System;
 
 namespace GunnersServer.Packets
 {
-    public class MovePacket : Packet
+    public class C_MovePacket : Packet
     {
         public override ushort ID => (ushort)PacketID.C_MovePacket;
-
-        public ushort userID;
 
         public float x, y, z;
 
@@ -17,7 +15,6 @@ namespace GunnersServer.Packets
 
             process += sizeof(ushort);
             process += sizeof(ushort);
-            process += PacketUtility.ReadUShortData(buffer, process, out userID);
             process += PacketUtility.ReadFloatData(buffer, process, out x);
             process += PacketUtility.ReadFloatData(buffer, process, out y);
             process += PacketUtility.ReadFloatData(buffer, process, out z);
@@ -30,13 +27,12 @@ namespace GunnersServer.Packets
 
             process += sizeof(ushort);
             process += PacketUtility.AppendUShortData(ID, buffer, process);
-            process += PacketUtility.AppendUShortData(userID, buffer, process);
             process += PacketUtility.AppendFloatData(x, buffer, process);
             process += PacketUtility.AppendFloatData(y, buffer, process);
             process += PacketUtility.AppendFloatData(z, buffer, process);
             PacketUtility.AppendUShortData(process, buffer, 0);
 
-            return buffer;
+            return UniqueBuffer.Close(process);
         }
     }
 }

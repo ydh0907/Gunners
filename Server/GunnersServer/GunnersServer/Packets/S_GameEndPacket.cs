@@ -9,12 +9,19 @@ namespace GunnersServer.Packets
 
         public override void Deserialize(ArraySegment<byte> buffer)
         {
-            throw new NotImplementedException();
+
         }
 
         public override ArraySegment<byte> Serialize()
         {
-            throw new NotImplementedException();
+            ushort process = 0;
+            ArraySegment<byte> buffer = UniqueBuffer.Open(256);
+
+            process += sizeof(ushort);
+            process += PacketUtility.AppendUShortData(ID, buffer, process);
+            PacketUtility.AppendUShortData(process, buffer, 0);
+
+            return UniqueBuffer.Close(process);
         }
     }
 }

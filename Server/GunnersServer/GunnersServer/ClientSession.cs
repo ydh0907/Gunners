@@ -8,21 +8,20 @@ namespace GunnersServer
     {
         public EndPoint endPoint = null;
 
-        public ushort userID;
-        public ushort roomID;
+        public ushort userID = ushort.MaxValue;
+        public ushort roomID = ushort.MaxValue;
         public string nickname = null;
 
         public float x;
         public float y;
         public float z;
 
-        public ushort hp;
         public ushort agent;
         public ushort weaponID;
 
         public void Reset()
         {
-            x = 0; y = 0;
+            x = 0; y = 0; z = 0;
             agent = 0; weaponID = 0;
             roomID = ushort.MaxValue;
         }

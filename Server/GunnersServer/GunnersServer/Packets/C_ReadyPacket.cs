@@ -8,15 +8,9 @@ namespace GunnersServer.Packets
     {
         public override ushort ID => (ushort)PacketID.C_ReadyPacket;
 
-        public ushort userID;
-
         public override void Deserialize(ArraySegment<byte> buffer)
         {
-            ushort process = 0;
 
-            process += sizeof(ushort);
-            process += sizeof(ushort);
-            process += PacketUtility.ReadUShortData(buffer, process, out userID);
         }
 
         public override ArraySegment<byte> Serialize()
@@ -26,10 +20,9 @@ namespace GunnersServer.Packets
 
             process += sizeof(ushort);
             process += PacketUtility.AppendUShortData(ID, buffer, process);
-            process += PacketUtility.AppendUShortData(userID, buffer, process);
             PacketUtility.AppendUShortData(process, buffer, 0);
 
-            return buffer;
+            return UniqueBuffer.Close(process);
         }
     }
 }

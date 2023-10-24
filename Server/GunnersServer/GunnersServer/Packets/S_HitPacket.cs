@@ -7,14 +7,28 @@ namespace GunnersServer.Packets
     {
         public override ushort ID => (ushort)PacketID.S_HitPacket;
 
+        public ushort DamageTakerID;
+
         public override void Deserialize(ArraySegment<byte> buffer)
         {
-            throw new NotImplementedException();
+            ushort process = 0;
+
+            process += sizeof(ushort);
+            process += sizeof(ushort);
+            process += PacketUtility.ReadUShortData(buffer, process, out DamageTakerID);
         }
 
         public override ArraySegment<byte> Serialize()
         {
-            throw new NotImplementedException();
+            ushort process = 0;
+            ArraySegment<byte> buffer = UniqueBuffer.Open(256);
+
+            process += sizeof(ushort);
+            process += PacketUtility.AppendUShortData(ID, buffer, process);
+            process += PacketUtility.AppendUShortData(DamageTakerID, buffer, process);
+            PacketUtility.AppendUShortData(process, buffer, 0);
+
+            return UniqueBuffer.Close(process);
         }
     }
 }

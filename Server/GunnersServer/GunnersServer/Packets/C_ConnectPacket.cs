@@ -28,7 +28,7 @@ namespace GunnersServer.Packets
             process += PacketUtility.AppendStringData(nickname, buffer, process);
             PacketUtility.AppendUShortData(process, buffer, 0);
 
-            return buffer;
+            return UniqueBuffer.Close(process);
         }
     }
 }

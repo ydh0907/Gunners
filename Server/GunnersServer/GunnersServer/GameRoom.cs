@@ -14,7 +14,6 @@ namespace GunnersServer
         public Queue<Tuple<ushort, Packet>> packetQueue = new();
 
         public bool ready = false;
-        public bool end = false;
 
         public void AddJob(Action job) => jobQueue.Push(job);
 
@@ -32,7 +31,12 @@ namespace GunnersServer
                     Packet packet = tuple.Item2;
 
                     if (id == host.userID) enterer.Send(packet.Serialize());
-                    else host.Send(packet.Serialize());
+                    else if(id == enterer.userID) host.Send(packet.Serialize());
+                    else if(id == ushort.MaxValue)
+                    {
+                        host.Send(packet.Serialize());
+                        enterer.Send(packet.Serialize());
+                    }
                 }
             }
             else Console.WriteLine("[Room] User not Found - Flush");
@@ -40,14 +44,18 @@ namespace GunnersServer
 
         public void Broadcast(Packet packet, ushort id)
         {
-            if (id == host.userID)
-                enterer.Send(packet.Serialize());
-            else if (id == enterer.userID)
-                host.Send(packet.Serialize());
-            else Console.WriteLine($"[Room] User not Found - Broadcast");
+            if (id == host.userID || id == enterer.userID)
+                packetQueue.Enqueue(new Tuple<ushort, Packet>(id, packet));
+            else
+                Console.WriteLine($"[Room] User not in room - Attempted ID : {id} - Broadcast");
         }
 
-        public Session GetUser(ushort id)
+        public void BroadcastAll(Packet packet)
+        {
+            packetQueue.Enqueue(new Tuple<ushort, Packet>(ushort.MaxValue, packet));
+        }
+
+        public ClientSession GetUser(ushort id)
         {
             if(host.userID == id)
                 return host;
@@ -58,12 +66,21 @@ namespace GunnersServer
             return null;
         }
 
-        public Session GetUser(bool isHost)
+        public ClientSession GetUser(bool isHost)
         {
             if(isHost && host.Active == 1) return host;
             else if(!isHost && enterer.Active == 1) return enterer;
 
             Console.WriteLine("[Room] User not Found - GetUser");
+            return null;
+        }
+
+        public ClientSession GetOtherUser(ushort id)
+        {
+            if (id == host.userID) return enterer;
+            else if (id == enterer.userID) return host;
+            else Console.WriteLine("[Room] User not Found - Attempted ID : {id} - GetOtherUser");
+
             return null;
         }
 
