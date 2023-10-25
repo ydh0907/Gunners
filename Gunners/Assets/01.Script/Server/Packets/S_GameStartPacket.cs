@@ -3,9 +3,9 @@ using System;
 
 namespace GunnersServer.Packets
 {
-    public class C_DisconnectPacket : Packet
+    public class S_GameStartPacket : Packet
     {
-        public override ushort ID => (ushort)PacketID.C_DisconnectPacket;
+        public override ushort ID => (ushort)PacketID.S_GameStartPacket;
 
         public override void Deserialize(ArraySegment<byte> buffer)
         {

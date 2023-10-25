@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using Do.Net;
 using GunnersServer.Packets;
@@ -21,6 +20,8 @@ namespace GunnersServer
         {
             get
             {
+                Console.WriteLine($"[Program] User count : {users.Count}");
+
                 if (nextUserID == ushort.MaxValue) nextUserID = ushort.MinValue;
                 while (users.ContainsKey(nextUserID))
                 {
@@ -34,7 +35,9 @@ namespace GunnersServer
         {
             get
             {
-                if(nextRoomID == ushort.MaxValue) nextRoomID = ushort.MinValue;
+                Console.WriteLine($"[Program] Room count : {rooms.Count}");
+
+                if (nextRoomID == ushort.MaxValue) nextRoomID = ushort.MinValue;
                 while (rooms.ContainsKey(nextRoomID))
                 {
                     nextRoomID++;
@@ -61,7 +64,7 @@ namespace GunnersServer
         {
             int lastFlushTime = Environment.TickCount;
             int currentTime;
-            while(true)
+            while (true)
             {
                 currentTime = Environment.TickCount;
                 if(currentTime - lastFlushTime > delay)

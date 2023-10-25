@@ -12,16 +12,11 @@ namespace GunnersServer
         public ushort roomID = ushort.MaxValue;
         public string nickname = null;
 
-        public float x;
-        public float y;
-        public float z;
-
         public ushort agent;
         public ushort weaponID;
 
         public void Reset()
         {
-            x = 0; y = 0; z = 0;
             agent = 0; weaponID = 0;
             roomID = ushort.MaxValue;
         }
@@ -35,12 +30,23 @@ namespace GunnersServer
         public override void OnDisconnected(EndPoint endPoint)
         {
             Console.WriteLine($"[Session] {endPoint} is Disconnected");
+
+            if(Program.users.ContainsKey(userID))
+            {
+                Program.users.Remove(userID);
+            }
+
+            if(Program.rooms.ContainsKey(roomID))
+            {
+                Program.rooms.Remove(roomID);
+                Program.rooms[roomID].DestroyRoom();
+            }
         }
 
         public override void OnPacketReceived(ArraySegment<byte> buffer)
         {
             Console.WriteLine($"[Session] {buffer.Count} of byte Received");
-            PacketManager.Instance.CreatePacket(buffer);
+            PacketManager.Instance.HandlePacket(this, PacketManager.Instance.CreatePacket(buffer));
         }
 
         public override void OnSent(int length)

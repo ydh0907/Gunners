@@ -3,11 +3,12 @@ using System;
 
 namespace GunnersServer.Packets
 {
-    public class C_HitPacket : Packet
+    public class C_MatchingPacket : Packet
     {
-        public override ushort ID => (ushort)PacketID.C_HitPacket;
+        public override ushort ID => (ushort)PacketID.C_MatchingPacket;
 
-        public ushort hp;
+        public ushort agent;
+        public ushort weaponID;
 
         public override void Deserialize(ArraySegment<byte> buffer)
         {
@@ -15,7 +16,8 @@ namespace GunnersServer.Packets
 
             process += sizeof(ushort);
             process += sizeof(ushort);
-            process += PacketUtility.ReadUShortData(buffer, process, out hp);
+            process += PacketUtility.ReadUShortData(buffer, process, out agent);
+            process += PacketUtility.ReadUShortData(buffer, process, out weaponID);
         }
 
         public override ArraySegment<byte> Serialize()
@@ -25,7 +27,8 @@ namespace GunnersServer.Packets
 
             process += sizeof(ushort);
             process += PacketUtility.AppendUShortData(ID, buffer, process);
-            process += PacketUtility.AppendUShortData(hp, buffer, process);
+            process += PacketUtility.AppendUShortData(agent, buffer, process);
+            process += PacketUtility.AppendUShortData(weaponID, buffer, process);
             PacketUtility.AppendUShortData(process, buffer, 0);
 
             return UniqueBuffer.Close(process);

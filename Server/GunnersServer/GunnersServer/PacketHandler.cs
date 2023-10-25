@@ -15,27 +15,15 @@ namespace GunnersServer
             _session.userID = Program.NextUserID;
 
             S_ConnectPacket s_ConnectPacket = new();
-
             s_ConnectPacket.userID = _session.userID;
 
             _session.Send(s_ConnectPacket.Serialize());
+
+            Program.users.Add(_session.userID, _session);
         }
         public static void C_DisconnectPacket(Session session, Packet packet)
         {
-            ClientSession _session = session as ClientSession;
-            C_DisconnectPacket _packet = packet as C_DisconnectPacket;
-
-            Program.users.Remove(_session.userID);
-
-            if(_session.roomID != ushort.MaxValue && Program.rooms.ContainsKey(_session.roomID))
-            {
-                S_GameEndPacket s_GameEndPacket = new();
-
-                Program.rooms[_session.roomID].AddJob
-                    (() => Program.rooms[_session.roomID].Broadcast(s_GameEndPacket, _session.userID));
-
-                Program.rooms[_session.roomID].DestroyRoom();
-            }
+            session.Close();
         }
         public static void C_MatchingPacket(Session session, Packet packet)
         {
@@ -95,13 +83,24 @@ namespace GunnersServer
             ClientSession _session = session as ClientSession;
             C_HitPacket _packet = packet as C_HitPacket;
 
-            Vector2 hit = new Vector2(_packet.x, _packet.y);
-            Vector2 target = new Vector2();
+            S_HitPacket s_HitPacket = new();
+            s_HitPacket.hp = _packet.hp;
+
+            Program.rooms[_session.roomID].AddJob
+                (() => Program.rooms[_session.roomID].Broadcast(s_HitPacket, _session.userID));
         }
         public static void C_GameEndPacket(Session session, Packet packet)
         {
             ClientSession _session = session as ClientSession;
             C_GameEndPacket _packet = packet as C_GameEndPacket;
+
+            S_GameEndPacket s_GameEndPacket = new();
+            s_GameEndPacket.winnerID = _session.userID;
+
+            Program.rooms[_session.roomID].AddJob
+                (() => Program.rooms[_session.roomID].BroadcastAll(s_GameEndPacket));
+
+            Program.rooms[_session.roomID].DestroyRoom();
         }
     }
 }

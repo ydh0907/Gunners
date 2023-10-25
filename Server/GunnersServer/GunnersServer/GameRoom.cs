@@ -1,5 +1,6 @@
 ﻿using System;
 using Do.Net;
+using GunnersServer.Packets;
 
 namespace GunnersServer
 {
@@ -14,6 +15,7 @@ namespace GunnersServer
         public Queue<Tuple<ushort, Packet>> packetQueue = new();
 
         public bool ready = false;
+        public bool end = false;
 
         public void AddJob(Action job) => jobQueue.Push(job);
 
@@ -22,24 +24,19 @@ namespace GunnersServer
             if (!(host.Active == 1 && enterer.Active == 1))
                 DestroyRoom();
 
-            if(host.Active + enterer.Active == 2)
+            while(packetQueue.Count > 0)
             {
-                while(packetQueue.Count > 0)
+                Tuple<ushort, Packet> tuple = packetQueue.Dequeue();
+                ushort id = tuple.Item1;
+                Packet packet = tuple.Item2;
+                if (id == host.userID) enterer.Send(packet.Serialize());
+                else if(id == enterer.userID) host.Send(packet.Serialize());
+                else if(id == ushort.MaxValue)
                 {
-                    Tuple<ushort, Packet> tuple = packetQueue.Dequeue();
-                    ushort id = tuple.Item1;
-                    Packet packet = tuple.Item2;
-
-                    if (id == host.userID) enterer.Send(packet.Serialize());
-                    else if(id == enterer.userID) host.Send(packet.Serialize());
-                    else if(id == ushort.MaxValue)
-                    {
-                        host.Send(packet.Serialize());
-                        enterer.Send(packet.Serialize());
-                    }
+                    host.Send(packet.Serialize());
+                    enterer.Send(packet.Serialize());
                 }
             }
-            else Console.WriteLine("[Room] User not Found - Flush");
         }
 
         public void Broadcast(Packet packet, ushort id)
@@ -86,6 +83,21 @@ namespace GunnersServer
 
         public void DestroyRoom()
         {
+            if (host.Active == 1)
+            {
+                S_GameEndPacket s_GameEndPacket = new();
+                s_GameEndPacket.winnerID = host.userID;
+
+                host.Send(s_GameEndPacket.Serialize());
+            }
+            if (enterer.Active == 1)
+            {
+                S_GameEndPacket s_GameEndPacket = new();
+                s_GameEndPacket.winnerID = enterer.userID;
+
+                enterer.Send(s_GameEndPacket.Serialize());
+            }
+
             host.Reset();
             enterer.Reset();
             Program.rooms.Remove(roomID);

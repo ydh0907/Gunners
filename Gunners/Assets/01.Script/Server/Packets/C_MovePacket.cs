@@ -3,11 +3,11 @@ using System;
 
 namespace GunnersServer.Packets
 {
-    public class C_HitPacket : Packet
+    public class C_MovePacket : Packet
     {
-        public override ushort ID => (ushort)PacketID.C_HitPacket;
+        public override ushort ID => (ushort)PacketID.C_MovePacket;
 
-        public ushort hp;
+        public float x, y, z;
 
         public override void Deserialize(ArraySegment<byte> buffer)
         {
@@ -15,7 +15,9 @@ namespace GunnersServer.Packets
 
             process += sizeof(ushort);
             process += sizeof(ushort);
-            process += PacketUtility.ReadUShortData(buffer, process, out hp);
+            process += PacketUtility.ReadFloatData(buffer, process, out x);
+            process += PacketUtility.ReadFloatData(buffer, process, out y);
+            process += PacketUtility.ReadFloatData(buffer, process, out z);
         }
 
         public override ArraySegment<byte> Serialize()
@@ -25,7 +27,9 @@ namespace GunnersServer.Packets
 
             process += sizeof(ushort);
             process += PacketUtility.AppendUShortData(ID, buffer, process);
-            process += PacketUtility.AppendUShortData(hp, buffer, process);
+            process += PacketUtility.AppendFloatData(x, buffer, process);
+            process += PacketUtility.AppendFloatData(y, buffer, process);
+            process += PacketUtility.AppendFloatData(z, buffer, process);
             PacketUtility.AppendUShortData(process, buffer, 0);
 
             return UniqueBuffer.Close(process);

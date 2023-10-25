@@ -1,11 +1,12 @@
 ﻿using Do.Net;
 using System;
+using System.Numerics;
 
 namespace GunnersServer.Packets
 {
-    public class C_DisconnectPacket : Packet
+    public class C_ReadyPacket : Packet
     {
-        public override ushort ID => (ushort)PacketID.C_DisconnectPacket;
+        public override ushort ID => (ushort)PacketID.C_ReadyPacket;
 
         public override void Deserialize(ArraySegment<byte> buffer)
         {
