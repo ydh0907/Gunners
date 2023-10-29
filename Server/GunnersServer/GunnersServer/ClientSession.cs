@@ -31,7 +31,7 @@ namespace GunnersServer
         {
             Console.WriteLine($"[Session] {endPoint} is Disconnected");
 
-            if(Program.users.ContainsKey(userID))
+            if (Program.users.ContainsKey(userID))
             {
                 Program.users.Remove(userID);
             }

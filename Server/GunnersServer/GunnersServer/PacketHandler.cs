@@ -20,10 +20,7 @@ namespace GunnersServer
             _session.Send(s_ConnectPacket.Serialize());
 
             Program.users.Add(_session.userID, _session);
-        }
-        public static void C_DisconnectPacket(Session session, Packet packet)
-        {
-            session.Close();
+            Console.WriteLine($"[Program] Player Count : {Program.users.Count}");
         }
         public static void C_MatchingPacket(Session session, Packet packet)
         {

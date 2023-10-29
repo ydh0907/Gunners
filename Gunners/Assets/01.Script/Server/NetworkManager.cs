@@ -23,7 +23,7 @@ public class NetworkManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        session.Send(new C_DisconnectPacket().Serialize());
+        session.Close();
     }
 
     public void Connect()

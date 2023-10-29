@@ -20,8 +20,6 @@ namespace GunnersServer
         {
             get
             {
-                Console.WriteLine($"[Program] User count : {users.Count}");
-
                 if (nextUserID == ushort.MaxValue) nextUserID = ushort.MinValue;
                 while (users.ContainsKey(nextUserID))
                 {

@@ -21,7 +21,7 @@ namespace GunnersServer.Packets
         public override ArraySegment<byte> Serialize()
         {
             ushort process = 0;
-            ArraySegment<byte> buffer = UniqueBuffer.Open(256);
+            ArraySegment<byte> buffer = UniqueBuffer.Open(64);
 
             process += sizeof(ushort);
             process += PacketUtility.AppendUShortData(ID, buffer, process);

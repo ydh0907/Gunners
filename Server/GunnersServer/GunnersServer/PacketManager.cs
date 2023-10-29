@@ -33,8 +33,6 @@ namespace GunnersServer
         {
             packetFactories.Add((ushort)PacketID.C_ConnectPacket, PacketUtility.CreatePacket<C_ConnectPacket>);
             packetHandlers.Add((ushort)PacketID.C_ConnectPacket, PacketHandler.C_ConnectPacket);
-            packetFactories.Add((ushort)PacketID.C_DisconnectPacket, PacketUtility.CreatePacket<C_DisconnectPacket>);
-            packetHandlers.Add((ushort)PacketID.C_DisconnectPacket, PacketHandler.C_DisconnectPacket);
             packetFactories.Add((ushort)PacketID.C_FirePacket, PacketUtility.CreatePacket<C_FirePacket>);
             packetHandlers.Add((ushort)PacketID.C_FirePacket, PacketHandler.C_FirePacket);
             packetFactories.Add((ushort)PacketID.C_GameEndPacket, PacketUtility.CreatePacket<C_GameEndPacket>);
