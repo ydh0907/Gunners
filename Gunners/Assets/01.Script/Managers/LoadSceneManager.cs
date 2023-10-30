@@ -15,11 +15,9 @@ public class LoadSceneManager : MonoBehaviour
 
     public IEnumerator Loading(AsyncOperation operation, Action action)
     {
-        WaitForSeconds wait = new WaitForSeconds(0.1f);
-
         while(!operation.isDone)
         {
-            yield return wait;
+            yield return null;
         }
 
         action?.Invoke();
