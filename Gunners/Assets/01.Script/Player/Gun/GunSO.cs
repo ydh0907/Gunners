@@ -2,11 +2,8 @@ using System;
 using UnityEngine;
 
 [Serializable]
+[CreateAssetMenu(menuName = "SO/GunSO")]
 public class GunSO : ScriptableObject
 {
-    public float fireRate;
-    public float bulletSpeed;
-    public ushort bulletDamage;
-    public Sprite gunSprite;
-    public Sprite bulletSprite;
+    public IGun gun;
 }

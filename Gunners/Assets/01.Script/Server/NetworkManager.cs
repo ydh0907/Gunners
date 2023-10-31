@@ -13,6 +13,7 @@ public class NetworkManager : MonoBehaviour
     public ServerSession session = new();
 
     public Queue<Packet> packetQueue = new();
+    public JobQueue jobQueue = new();
 
     private void Awake()
     {
@@ -33,6 +34,11 @@ public class NetworkManager : MonoBehaviour
         connector.StartConnect(endPoint);
 
         StartCoroutine(connecting());
+    }
+
+    public void Send(Packet packet)
+    {
+        jobQueue.Push(() => packetQueue.Enqueue(packet));
     }
 
     private IEnumerator connecting()
