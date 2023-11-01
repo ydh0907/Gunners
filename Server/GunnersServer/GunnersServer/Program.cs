@@ -85,38 +85,35 @@ namespace GunnersServer
 
         public static void EnterRoom(ClientSession user)
         {
-            lock(matchingLocker)
+            if(matchingRoom.host == null)
             {
-                if(matchingRoom.host == null)
-                {
-                    matchingRoom.host = user;
-                }
-                else
-                {
-                    matchingRoom.enterer = user;
-                    rooms.Add(matchingRoom.roomID, matchingRoom);
+                matchingRoom.host = user;
+            }
+            else
+            {
+                matchingRoom.enterer = user;
+                rooms.Add(matchingRoom.roomID, matchingRoom);
 
-                    S_MatchedPacket s_MatchedPacket = new();
-                    s_MatchedPacket.roomID = matchingRoom.roomID;
+                S_MatchedPacket s_MatchedPacket = new();
+                s_MatchedPacket.roomID = matchingRoom.roomID;
 
-                    s_MatchedPacket.host = true;
-                    s_MatchedPacket.name = matchingRoom.enterer.nickname;
-                    s_MatchedPacket.agent = matchingRoom.enterer.agent;
-                    s_MatchedPacket.weaponID = matchingRoom.enterer.weaponID;
-                    matchingRoom.AddJob
-                        (() => matchingRoom.Broadcast(s_MatchedPacket, matchingRoom.enterer.userID));
+                s_MatchedPacket.host = true;
+                s_MatchedPacket.name = matchingRoom.enterer.nickname;
+                s_MatchedPacket.agent = matchingRoom.enterer.agent;
+                s_MatchedPacket.weapon = matchingRoom.enterer.weaponID;
+                matchingRoom.AddJob
+                    (() => matchingRoom.Broadcast(s_MatchedPacket, matchingRoom.enterer.userID));
 
-                    s_MatchedPacket.host = false;
-                    s_MatchedPacket.name = matchingRoom.host.nickname;
-                    s_MatchedPacket.agent = matchingRoom.host.agent;
-                    s_MatchedPacket.weaponID = matchingRoom.host.weaponID;
-                    matchingRoom.AddJob
-                        (() => matchingRoom.Broadcast(s_MatchedPacket, matchingRoom.host.userID));
+                s_MatchedPacket.host = false;
+                s_MatchedPacket.name = matchingRoom.host.nickname;
+                s_MatchedPacket.agent = matchingRoom.host.agent;
+                s_MatchedPacket.weapon = matchingRoom.host.weaponID;
+                matchingRoom.AddJob
+                    (() => matchingRoom.Broadcast(s_MatchedPacket, matchingRoom.host.userID));
 
-                    Console.WriteLine($"[Room] {matchingRoom.host.userID} : {matchingRoom.host.endPoint} and {matchingRoom.enterer.userID} : {matchingRoom.enterer.endPoint} is Matching");
+                Console.WriteLine($"[Room] {matchingRoom.host.userID} : {matchingRoom.host.endPoint} and {matchingRoom.enterer.userID} : {matchingRoom.enterer.endPoint} is Matching");
 
-                    matchingRoom = new(NextRoomID);
-                }
+                matchingRoom = new(NextRoomID);
             }
         }
 

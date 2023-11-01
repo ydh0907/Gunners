@@ -13,7 +13,7 @@ public class LoadSceneManager : MonoBehaviour
         StartCoroutine(Loading(operation, action));
     }
 
-    public IEnumerator Loading(AsyncOperation operation, Action action)
+    private IEnumerator Loading(AsyncOperation operation, Action action)
     {
         while(!operation.isDone)
         {

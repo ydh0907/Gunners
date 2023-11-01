@@ -28,7 +28,7 @@ namespace GunnersServer
             C_MatchingPacket _packet = packet as C_MatchingPacket;
 
             _session.agent = _packet.agent;
-            _session.weaponID = _packet.weaponID;
+            _session.weaponID = _packet.weapon;
 
             Program.AddJob
                 (() => Program.EnterRoom(_session));
@@ -67,10 +67,6 @@ namespace GunnersServer
             C_FirePacket _packet = packet as C_FirePacket;
 
             S_FirePacket s_FirePacket = new();
-
-            s_FirePacket.x = _packet.x;
-            s_FirePacket.y = _packet.y;
-            s_FirePacket.z = _packet.z;
 
             Program.rooms[_session.roomID].AddJob
                 (() => Program.rooms[_session.roomID].Broadcast(s_FirePacket, _session.userID));

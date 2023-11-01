@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92651a0b368aa7542aac9ae63256ee3f, type: 3}
-  m_Name: GunListSO
+  m_Script: {fileID: 11500000, guid: b8e60ab54b326d0459a473d2cbd89d12, type: 3}
+  m_Name: Shotgun
   m_EditorClassIdentifier: 
-  guns:
-  - {fileID: 11400000, guid: 1aff189f0ef25564886b43e1195ba3f3, type: 2}
-  - {fileID: 11400000, guid: a4182a88fa6e2ca4389ffd504e4fd7f9, type: 2}
+  gun: {fileID: 5881579152990157008, guid: 6eaf89ea1465d3b4e95f2987d686e0f7, type: 3}

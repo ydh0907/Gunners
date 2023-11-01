@@ -17,35 +17,48 @@ public class PacketHandler
     {
         ServerSession _session = session as ServerSession;
         S_FirePacket _packet = packet as S_FirePacket;
+
+        EnemyDummy.Instance.Fire();
     }
 
     public static void S_GameEndPacket(Session session, Packet packet)
     {
         ServerSession _session = session as ServerSession;
         S_GameEndPacket _packet = packet as S_GameEndPacket;
+
+        if(_packet.winnerID == _session.userID) GameManager.Instance.Win();
+        else GameManager.Instance.Lose();
     }
 
     public static void S_GameStartPacket(Session session, Packet packet)
     {
         ServerSession _session = session as ServerSession;
         S_GameStartPacket _packet = packet as S_GameStartPacket;
+
+        GameManager.Instance.OnStart();
     }
 
     public static void S_HitPacket(Session session, Packet packet)
     {
         ServerSession _session = session as ServerSession;
         S_HitPacket _packet = packet as S_HitPacket;
+
+        Agent.Instance.SetHP(_packet.hp);
     }
 
     public static void S_MatchedPacket(Session session, Packet packet)
     {
         ServerSession _session = session as ServerSession;
         S_MatchedPacket _packet = packet as S_MatchedPacket;
+
+        GameManager.Instance.Matched(_packet.host, _packet.agent, _packet.weapon);
     }
 
     public static void S_MovePacket(Session session, Packet packet)
     {
         ServerSession _session = session as ServerSession;
         S_MovePacket _packet = packet as S_MovePacket;
+
+        EnemyDummy.Instance.Move(_packet.x, _packet.y, _packet.z);
     }
 }
