@@ -11,11 +11,10 @@ public class Agent : MonoBehaviour
     public static void Make(ICharacter character, IGun gun, bool host)
     {
         Instance = Instantiate(character).gameObject.AddComponent<Agent>();
-        Instantiate(gun, Instance.transform);
-
-        Instance.gun = gun;
+        Instance.gun = Instantiate(gun, Instance.transform).GetComponent<IGun>();
+        Instance.character = Instance.GetComponent<ICharacter>();
+        Instance.rb = Instance.GetComponent<Rigidbody2D>();
         Instance.host = host;
-        Instance.character = character;
     }
 
     public IGun gun;
@@ -27,7 +26,12 @@ public class Agent : MonoBehaviour
     [SerializeField] private float max = 0.1f;
     private float current = 0;
 
-    private void Awake()
+    public bool move;
+    private float moveX;
+    private Rigidbody2D rb;
+    private Vector2 mouseDir;
+
+    private void Start()
     {
         // 여기서 위치 정하기
     }
@@ -46,9 +50,9 @@ public class Agent : MonoBehaviour
 
     private void FixedUpdate()
     {
-        current += Time.deltaTime;
+        current += Time.fixedDeltaTime;
 
-        if(current > max)
+        if(current >= max)
         {
             current = 0;
 
@@ -61,9 +65,20 @@ public class Agent : MonoBehaviour
         }
     }
 
-    public void Move(Vector2 dir)
+    private void Update()
     {
+        moveX = Input.GetAxisRaw("Horizontal");
 
+        Move(moveX);
+        Dir(mouseDir);
+    }
+
+    public void Move(float x)
+    {
+        if (move)
+        {
+            rb.velocity = new Vector2(x, rb.velocity.y);
+        }
     }
 
     public void Dir(Vector2 pos)

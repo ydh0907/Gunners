@@ -17,20 +17,20 @@ public class AgentInfoManager : MonoBehaviour
 
     public CharacterSO Character
     {
-        get => character;
+        get => Instance.character;
         set
         {
-            character = value;
+            Instance.character = value;
             OnValueChange.Invoke();
         }
     }
 
     public GunSO Gun
     {
-        get => gun;
+        get => Instance.gun;
         set
         {
-            gun = value;
+            Instance.gun = value;
             OnValueChange.Invoke();
         }
     }

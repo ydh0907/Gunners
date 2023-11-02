@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: GunListSO
   m_EditorClassIdentifier: 
   guns:
+  - {fileID: 11400000, guid: 2ea65f0766e5e194f89f09eb48775e3c, type: 2}
   - {fileID: 11400000, guid: 1aff189f0ef25564886b43e1195ba3f3, type: 2}
   - {fileID: 11400000, guid: a4182a88fa6e2ca4389ffd504e4fd7f9, type: 2}
