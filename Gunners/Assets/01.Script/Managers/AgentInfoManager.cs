@@ -31,7 +31,7 @@ public class AgentInfoManager : MonoBehaviour
         set
         {
             Instance.gun = value;
-            OnValueChange.Invoke();
+            OnValueChange?.Invoke();
         }
     }
 

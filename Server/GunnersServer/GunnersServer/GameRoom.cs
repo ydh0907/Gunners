@@ -101,6 +101,8 @@ namespace GunnersServer
             host.Reset();
             enterer.Reset();
             Program.rooms.Remove(roomID);
+
+            Console.WriteLine($"[Room] Room is Destroyed : {roomID}");
         }
 
         public GameRoom(ushort id)

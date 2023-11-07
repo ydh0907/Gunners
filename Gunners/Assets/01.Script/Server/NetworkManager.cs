@@ -43,7 +43,7 @@ public class NetworkManager : MonoBehaviour
 
     private IEnumerator connecting()
     {
-        yield return new WaitUntil(() => session.Active == 0);
+        yield return new WaitUntil(() => session.Active != 0);
 
         session.nickname = GameObject.Find("Name").GetComponent<TMPro.TMP_InputField>().text;
         if (session.nickname == "") session.nickname = "unknown";
@@ -55,7 +55,7 @@ public class NetworkManager : MonoBehaviour
 
         StartCoroutine(Flush());
 
-        LoadSceneManager.Instance.LoadSceneAsync("MainScene", null);
+        LoadSceneManager.Instance.LoadSceneAsync("MainScene", () => Debug.Log("connected : " + session.Active));
     }
 
     private IEnumerator Flush()

@@ -91,6 +91,13 @@ namespace GunnersServer
             }
             else
             {
+                if(matchingRoom.host.Active == 0)
+                {
+                    matchingRoom = new(NextRoomID);
+                    matchingRoom.host = user;
+                    return;
+                }
+
                 matchingRoom.enterer = user;
                 rooms.Add(matchingRoom.roomID, matchingRoom);
 

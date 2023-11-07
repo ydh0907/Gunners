@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] public CharacterListSO CharacterList;
     [SerializeField] public GunListSO GunList;
 
+    public Action onMatchingStart = null;
+    public Action onMatched = null;
+
     public Action onGameWin = null;
     public Action onGameLose = null;
     public Action onGameStart = null;
@@ -33,6 +36,8 @@ public class GameManager : MonoBehaviour
 
     public void StartMatching()
     {
+        onMatchingStart?.Invoke();
+
         C_MatchingPacket c_MatchingPacket = new C_MatchingPacket();
         c_MatchingPacket.agent = (ushort)CharacterList.characters.IndexOf(AgentInfoManager.Instance.Character);
         c_MatchingPacket.weapon = (ushort)GunList.guns.IndexOf(AgentInfoManager.Instance.Gun);
@@ -45,54 +50,31 @@ public class GameManager : MonoBehaviour
         NetworkManager.Instance.Send(new C_GameEndPacket());
     }
 
-    public void AddJob(Action action)
-    {
-        JobQueue.Push(action);
-    }
-
-    public void Log(string massage)
-    {
-        JobQueue.Push(() =>
-        {
-            Debug.Log(massage);
-        });
-    }
-
     public void OnStart()
     {
-        JobQueue.Push(() =>
-        {
-            onGameStart?.Invoke();
-        });
+        onGameStart?.Invoke();
     }
 
     public void Win()
     {
-        JobQueue.Push(() =>
-        {
-            onGameWin?.Invoke();
-        });
+        onGameWin?.Invoke();
     }
 
     public void Lose()
     {
-        JobQueue.Push(() =>
-        {
-            onGameLose?.Invoke();
-        });
+        onGameLose?.Invoke();
     }
 
     public void Matched(bool host, ushort character, ushort gun)
     {
-        JobQueue.Push(() =>
+        LoadSceneManager.Instance.LoadSceneAsync("GameScene", () =>
         {
-            LoadSceneManager.Instance.LoadSceneAsync("GameScene", () =>
-            {
-                Agent.Make(AgentInfoManager.Instance.Character.character, AgentInfoManager.Instance.Gun.gun, host);
-                EnemyDummy.Make(CharacterList.characters[character].character, GunList.guns[gun].gun, host);
+            onMatched?.Invoke();
 
-                NetworkManager.Instance.Send(new C_ReadyPacket());
-            });
+            Agent.Make(AgentInfoManager.Instance.Character.character, AgentInfoManager.Instance.Gun.gun, host);
+            EnemyDummy.Make(CharacterList.characters[character].character, GunList.guns[gun].gun, host);
+
+            NetworkManager.Instance.Send(new C_ReadyPacket());
         });
     }
 }
