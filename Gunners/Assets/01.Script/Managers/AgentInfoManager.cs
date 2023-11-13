@@ -21,7 +21,7 @@ public class AgentInfoManager : MonoBehaviour
         set
         {
             Instance.character = value;
-            OnValueChange.Invoke();
+            OnValueChange?.Invoke();
         }
     }
 

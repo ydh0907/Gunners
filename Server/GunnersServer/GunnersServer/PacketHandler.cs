@@ -43,7 +43,7 @@ namespace GunnersServer
                 S_GameStartPacket s_GameStartPacket = new();
 
                 Program.rooms[_session.roomID].AddJob
-                    (() => Program.rooms[_session.roomID].BroadcastAll(_packet));
+                    (() => Program.rooms[_session.roomID].BroadcastAll(s_GameStartPacket));
             }
             else Program.rooms[_session.roomID].ready = true;
         }
