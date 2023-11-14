@@ -35,6 +35,8 @@ public class PacketManager : MonoBehaviour
         packetHandlers.Add((ushort)PacketID.S_MatchedPacket, PacketHandler.S_MatchedPacket);
         packetFactories.Add((ushort)PacketID.S_MovePacket, PacketUtility.CreatePacket<S_MovePacket>);
         packetHandlers.Add((ushort)PacketID.S_MovePacket, PacketHandler.S_MovePacket);
+        packetFactories.Add((ushort)PacketID.S_ReroadPacket, PacketUtility.CreatePacket<S_ReroadPacket>);
+        packetHandlers.Add((ushort)PacketID.S_ReroadPacket, PacketHandler.S_ReroadPacket);
     }
 
     public Packet CreatePacket(ArraySegment<byte> buffer)
@@ -43,7 +45,7 @@ public class PacketManager : MonoBehaviour
 
         if (packetFactories.ContainsKey(id))
             return packetFactories[id]?.Invoke(buffer);
-        else Console.WriteLine($"[Manager] Packet ID not Found - CreatePacket");
+        else GameManager.Instance.JobQueue.Push(() => Debug.Log($"[Manager] Packet ID not Found - CreatePacket"));
 
         return null;
     }
@@ -53,7 +55,7 @@ public class PacketManager : MonoBehaviour
         if (packet != null)
             if (packetHandlers.ContainsKey(packet.ID))
                 packetHandlers[packet.ID]?.Invoke(session, packet);
-            else Console.WriteLine($"[Manager] Packet ID not Found - HandlePacket");
-        else Console.WriteLine($"[Manager] Packet is null - HandlePacket");
+            else GameManager.Instance.JobQueue.Push(() => Debug.Log($"[Manager] Packet ID not Found - HandlePacket"));
+        else GameManager.Instance.JobQueue.Push(() => Debug.Log($"[Manager] Packet is null - HandlePacket"));
     }
 }

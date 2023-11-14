@@ -29,6 +29,11 @@ public class EnemyDummy : MonoBehaviour
 
     public bool host;
 
+    private void Update()
+    {
+        jobQueue.Flush();
+    }
+
     public void Hit(ushort damage)
     {
         character.SetHP((ushort)(character.hp - (damage * (character.armor / 100))));
@@ -68,6 +73,11 @@ public class EnemyDummy : MonoBehaviour
         {
             gun.Fire();
         });
+    }
+
+    public void Reroad()
+    {
+        gun.Reroad();
     }
 
     private void OnDestroy()

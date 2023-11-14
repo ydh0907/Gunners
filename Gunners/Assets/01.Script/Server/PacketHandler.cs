@@ -61,4 +61,12 @@ public class PacketHandler
 
         GameManager.Instance.JobQueue.Push(() => EnemyDummy.Instance.Move(_packet.x, _packet.y, _packet.z));
     }
+
+    public static void S_ReroadPacket(Session session, Packet packet)
+    {
+        ServerSession _session = session as ServerSession;
+        S_ReroadPacket _packet = packet as S_ReroadPacket;
+
+        GameManager.Instance.JobQueue.Push(() => EnemyDummy.Instance.Reroad());
+    }
 }

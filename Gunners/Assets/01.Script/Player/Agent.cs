@@ -33,7 +33,12 @@ public class Agent : MonoBehaviour
 
     private void Start()
     {
-        // 여기서 위치 정하기
+        if (host)
+            transform.position = Vector3.left * 5;
+        else 
+            transform.position = Vector3.right * 5;
+
+
     }
 
     private void OnDestroy()
@@ -71,6 +76,8 @@ public class Agent : MonoBehaviour
 
         Move(moveX);
         Dir(mouseDir);
+
+        JobQueue.Flush();
     }
 
     public void Move(float x)
@@ -88,9 +95,6 @@ public class Agent : MonoBehaviour
 
     public void SetHP(ushort hp)
     {
-        JobQueue.Push(() =>
-        {
-            character.SetHP(hp);
-        });
+        character.SetHP(hp);
     }
 }

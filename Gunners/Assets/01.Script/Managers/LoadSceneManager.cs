@@ -7,6 +7,12 @@ public class LoadSceneManager : MonoBehaviour
 {
     public static LoadSceneManager Instance;
 
+    public void LoadSceneAsync(int sceneNumber, Action action)
+    {
+        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneNumber);
+        StartCoroutine(Loading(operation, action));
+    }
+
     public void LoadSceneAsync(string sceneName, Action action)
     {
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);

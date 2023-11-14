@@ -1078,7 +1078,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CharacterList: {fileID: 11400000, guid: ab425476715b0c243a8d8701ac2d1096, type: 2}
   GunList: {fileID: 11400000, guid: 68cc59b496e3f634783f5032790f67c9, type: 2}
-  isWin: 0
 --- !u!114 &1759359401
 MonoBehaviour:
   m_ObjectHideFlags: 0

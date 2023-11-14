@@ -95,5 +95,15 @@ namespace GunnersServer
 
             Program.rooms[_session.roomID].DestroyRoom();
         }
+        public static void C_ReroadPacket(Session session, Packet packet)
+        {
+            ClientSession _session = session as ClientSession;
+            C_ReroadPacket _packet = packet as C_ReroadPacket;
+
+            S_ReroadPacket s_ReroadPacket = new();
+
+            Program.rooms[_session.roomID].AddJob
+                (() => Program.rooms[_session.roomID].Broadcast(s_ReroadPacket, _session.userID));
+        }
     }
 }

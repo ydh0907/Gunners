@@ -45,6 +45,8 @@ namespace GunnersServer
             packetHandlers.Add((ushort)PacketID.C_MovePacket, PacketHandler.C_MovePacket);
             packetFactories.Add((ushort)PacketID.C_ReadyPacket, PacketUtility.CreatePacket<C_ReadyPacket>);
             packetHandlers.Add((ushort)PacketID.C_ReadyPacket, PacketHandler.C_ReadyPacket);
+            packetFactories.Add((ushort)PacketID.C_ReroadPacket, PacketUtility.CreatePacket<C_ReroadPacket>);
+            packetHandlers.Add((ushort)PacketID.C_ReroadPacket, PacketHandler.C_ReroadPacket);
         }
 
         public Packet CreatePacket(ArraySegment<byte> buffer)

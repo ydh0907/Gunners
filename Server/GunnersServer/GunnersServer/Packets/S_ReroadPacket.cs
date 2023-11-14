@@ -3,16 +3,13 @@ using System;
 
 namespace GunnersServer.Packets
 {
-    public class S_FirePacket : Packet
+    public class S_ReroadPacket : Packet
     {
-        public override ushort ID => (ushort)PacketID.S_FirePacket;
+        public override ushort ID => (ushort)PacketID.S_ReroadPacket;
 
         public override void Deserialize(ArraySegment<byte> buffer)
         {
-            ushort process = 0;
 
-            process += sizeof(ushort);
-            process += sizeof(ushort);
         }
 
         public override ArraySegment<byte> Serialize()

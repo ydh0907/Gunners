@@ -13,13 +13,18 @@ public class NetworkManager : MonoBehaviour
     public ServerSession session = new();
 
     public Queue<Packet> packetQueue = new();
-    public JobQueue jobQueue = new();
+    public JobQueue JobQueue = new();
 
     private void Awake()
     {
         if (Instance != null)
             Destroy(gameObject);
         Instance = this;
+    }
+
+    private void Update()
+    {
+        JobQueue.Flush();
     }
 
     private void OnApplicationQuit()
@@ -38,7 +43,7 @@ public class NetworkManager : MonoBehaviour
 
     public void Send(Packet packet)
     {
-        jobQueue.Push(() => packetQueue.Enqueue(packet));
+        JobQueue.Push(() => packetQueue.Enqueue(packet));
     }
 
     private IEnumerator connecting()

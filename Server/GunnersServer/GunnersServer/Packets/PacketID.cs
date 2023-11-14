@@ -21,5 +21,6 @@ namespace GunnersServer.Packets
         S_FirePacket, // 발사 정보
         S_HitPacket, // 적중 했으면 보내기 (모두에게)
         S_GameEndPacket, // 둘다 끝났으면 방 폭파
+        S_ReroadPacket, // 재장전 정보
     }
 }

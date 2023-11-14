@@ -36,6 +36,7 @@ namespace GunnersServer.Packets
 
             process += sizeof(ushort);
             process += PacketUtility.AppendUShortData(ID, buffer, process);
+            process += PacketUtility.AppendUShortData(roomID, buffer, process);
             Buffer.BlockCopy(BitConverter.GetBytes(host), 0, buffer.Array, buffer.Offset + process, sizeof(bool));
             process += sizeof(bool);
             process += PacketUtility.AppendStringData(name, buffer, process);
