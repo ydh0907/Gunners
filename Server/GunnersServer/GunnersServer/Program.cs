@@ -101,22 +101,28 @@ namespace GunnersServer
                 matchingRoom.enterer = user;
                 rooms.Add(matchingRoom.roomID, matchingRoom);
 
-                S_MatchedPacket s_MatchedPacket = new();
-                s_MatchedPacket.roomID = matchingRoom.roomID;
+                matchingRoom.host.roomID = matchingRoom.roomID;
+                matchingRoom.enterer.roomID = matchingRoom.roomID;
 
-                s_MatchedPacket.host = true;
-                s_MatchedPacket.name = matchingRoom.enterer.nickname;
-                s_MatchedPacket.agent = matchingRoom.enterer.agent;
-                s_MatchedPacket.weapon = matchingRoom.enterer.weaponID;
-                matchingRoom.AddJob
-                    (() => matchingRoom.Broadcast(s_MatchedPacket, matchingRoom.enterer.userID));
+                S_MatchedPacket s_MatchedPacketHost = new();
+                s_MatchedPacketHost.roomID = matchingRoom.roomID;
 
-                s_MatchedPacket.host = false;
-                s_MatchedPacket.name = matchingRoom.host.nickname;
-                s_MatchedPacket.agent = matchingRoom.host.agent;
-                s_MatchedPacket.weapon = matchingRoom.host.weaponID;
+                s_MatchedPacketHost.host = true;
+                s_MatchedPacketHost.name = matchingRoom.enterer.nickname;
+                s_MatchedPacketHost.agent = matchingRoom.enterer.agent;
+                s_MatchedPacketHost.weapon = matchingRoom.enterer.weaponID;
                 matchingRoom.AddJob
-                    (() => matchingRoom.Broadcast(s_MatchedPacket, matchingRoom.host.userID));
+                    (() => matchingRoom.Broadcast(s_MatchedPacketHost, matchingRoom.enterer.userID));
+
+                S_MatchedPacket s_MatchedPacketEnterer = new();
+                s_MatchedPacketEnterer.roomID = matchingRoom.roomID;
+
+                s_MatchedPacketEnterer.host = false;
+                s_MatchedPacketEnterer.name = matchingRoom.host.nickname;
+                s_MatchedPacketEnterer.agent = matchingRoom.host.agent;
+                s_MatchedPacketEnterer.weapon = matchingRoom.host.weaponID;
+                matchingRoom.AddJob
+                    (() => matchingRoom.Broadcast(s_MatchedPacketEnterer, matchingRoom.host.userID));
 
                 Console.WriteLine($"[Room] {matchingRoom.host.userID} : {matchingRoom.host.endPoint} and {matchingRoom.enterer.userID} : {matchingRoom.enterer.endPoint} is Matching");
 

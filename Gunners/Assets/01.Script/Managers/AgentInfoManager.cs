@@ -15,13 +15,17 @@ public class AgentInfoManager : MonoBehaviour
     public CharacterListSO CharacterList => GameManager.Instance.CharacterList;
     public GunListSO GunList => GameManager.Instance.GunList;
 
+    public void Init()
+    {
+        Gun = GunList.guns[0];
+        Character = CharacterList.characters[0];
+    }
+
     public CharacterSO Character
     {
         get => Instance.character;
         set
         {
-            if (Instance.character == null)
-                Instance.character = CharacterList.characters[0];
             Instance.character = value;
             OnValueChange?.Invoke();
         }
@@ -32,8 +36,6 @@ public class AgentInfoManager : MonoBehaviour
         get => Instance.gun;
         set
         {
-            if (Instance.gun == null)
-                Instance.gun = GunList.guns[0];
             Instance.gun = value;
             OnValueChange?.Invoke();
         }

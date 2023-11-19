@@ -12,7 +12,7 @@ public class Revolver : IGun
         lastRate = 0;
         fireSpray = 10f;
         reroadTime = 2;
-        bulletSpeed = 16;
+        bulletSpeed = 32;
         bulletCount = 6;
         bulletPellet = 1;
         bulletDamage = 25;
@@ -35,7 +35,7 @@ public class Revolver : IGun
                     base.bullet,
                     firePos.position,
                     Quaternion.Euler(transform.eulerAngles + new Vector3(0, 0, Random.Range(-fireSpray, fireSpray)))).GetComponent<Bullet>();
-                bullet.Fire(bulletSpeed, bulletDamage);
+                bullet.Fire(bulletSpeed, bulletDamage, dummy);
             }
 
             ani.SetTrigger("Fire");
@@ -44,6 +44,11 @@ public class Revolver : IGun
             {
                 Reroad();
             }
+
+            lastRate = 0f;
+
+            if (!dummy)
+                NetworkManager.Instance.Send(new C_FirePacket());
         }
     }
 
@@ -56,6 +61,7 @@ public class Revolver : IGun
     {
         fireAble = false;
         yield return new WaitForSeconds(reroadTime);
+        bulletCount = bulletMaximum;
         fireAble = true;
     }
 }

@@ -4,20 +4,21 @@ using UnityEngine;
 
 public abstract class IGun : MonoBehaviour
 {
-    [SerializeField] protected Transform bullet;
-    [SerializeField] protected Transform firePos;
-    [SerializeField] protected Animator ani;
+    [SerializeField] public Transform bullet;
+    [SerializeField] public Transform firePos;
+    [SerializeField] public Animator ani;
 
-    public bool fireAble { get; protected set; }
-    public float fireRate { get; protected set; }
-    public float lastRate { get; protected set; }
-    public float fireSpray { get; protected set; }
-    public float reroadTime { get; protected set; }
-    public float bulletSpeed { get; protected set; }
-    public ushort bulletCount { get; protected set; }
-    public ushort bulletPellet { get; protected set; }
-    public ushort bulletDamage { get; protected set; }
-    public ushort bulletMaximum { get; protected set; }
+    public bool dummy = false;
+    public bool fireAble;
+    public float fireRate;
+    public float lastRate;
+    public float fireSpray;
+    public float reroadTime;
+    public float bulletSpeed;
+    public ushort bulletCount;
+    public ushort bulletPellet;
+    public ushort bulletDamage;
+    public ushort bulletMaximum;
 
     public abstract void Fire();
     public abstract void Reroad();

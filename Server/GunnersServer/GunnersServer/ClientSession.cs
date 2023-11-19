@@ -17,7 +17,8 @@ namespace GunnersServer
 
         public void Reset()
         {
-            agent = 0; weaponID = 0;
+            agent = 0;
+            weaponID = 0;
             roomID = ushort.MaxValue;
         }
 
@@ -38,8 +39,8 @@ namespace GunnersServer
 
             if(Program.rooms.ContainsKey(roomID))
             {
+                Program.rooms[roomID]?.DestroyRoom();
                 Program.rooms.Remove(roomID);
-                Program.rooms[roomID].DestroyRoom();
             }
         }
 

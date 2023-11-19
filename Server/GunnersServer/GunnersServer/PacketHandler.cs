@@ -37,15 +37,17 @@ namespace GunnersServer
         {
             ClientSession _session = session as ClientSession;
             C_ReadyPacket _packet = packet as C_ReadyPacket;
-
-            if (Program.rooms[_session.roomID].ready)
+            if (Program.rooms.ContainsKey(_session.roomID))
             {
-                S_GameStartPacket s_GameStartPacket = new();
+                if (Program.rooms[_session.roomID].ready)
+                {
+                    S_GameStartPacket s_GameStartPacket = new();
 
-                Program.rooms[_session.roomID].AddJob
-                    (() => Program.rooms[_session.roomID].BroadcastAll(s_GameStartPacket));
+                    Program.rooms[_session.roomID]?.AddJob
+                        (() => Program.rooms[_session.roomID].BroadcastAll(s_GameStartPacket));
+                }
+                else Program.rooms[_session.roomID].ready = true;
             }
-            else Program.rooms[_session.roomID].ready = true;
         }
         public static void C_MovePacket(Session session, Packet packet)
         {
@@ -58,8 +60,9 @@ namespace GunnersServer
             s_MovePacket.y = _packet.y;
             s_MovePacket.z = _packet.z;
 
-            Program.rooms[_session.roomID].AddJob
-                (() => Program.rooms[_session.roomID].Broadcast(s_MovePacket, _session.userID));
+            if(Program.rooms.ContainsKey(_session.roomID))
+                Program.rooms[_session.roomID]?.AddJob
+                    (() => Program.rooms[_session.roomID].Broadcast(s_MovePacket, _session.userID));
         }
         public static void C_FirePacket(Session session, Packet packet)
         {
@@ -68,8 +71,9 @@ namespace GunnersServer
 
             S_FirePacket s_FirePacket = new();
 
-            Program.rooms[_session.roomID].AddJob
-                (() => Program.rooms[_session.roomID].Broadcast(s_FirePacket, _session.userID));
+            if (Program.rooms.ContainsKey(_session.roomID))
+                Program.rooms[_session.roomID]?.AddJob
+                    (() => Program.rooms[_session.roomID].Broadcast(s_FirePacket, _session.userID));
         }
         public static void C_HitPacket(Session session, Packet packet)
         {
@@ -79,8 +83,9 @@ namespace GunnersServer
             S_HitPacket s_HitPacket = new();
             s_HitPacket.hp = _packet.hp;
 
-            Program.rooms[_session.roomID].AddJob
-                (() => Program.rooms[_session.roomID].Broadcast(s_HitPacket, _session.userID));
+            if (Program.rooms.ContainsKey(_session.roomID))
+                Program.rooms[_session.roomID]?.AddJob
+                    (() => Program.rooms[_session.roomID].Broadcast(s_HitPacket, _session.userID));
         }
         public static void C_GameEndPacket(Session session, Packet packet)
         {
@@ -90,10 +95,13 @@ namespace GunnersServer
             S_GameEndPacket s_GameEndPacket = new();
             s_GameEndPacket.winnerID = _session.userID;
 
-            Program.rooms[_session.roomID].AddJob
-                (() => Program.rooms[_session.roomID].BroadcastAll(s_GameEndPacket));
+            if (Program.rooms.ContainsKey(_session.roomID))
+            {
+                Program.rooms[_session.roomID]?.AddJob
+                    (() => Program.rooms[_session.roomID].BroadcastAll(s_GameEndPacket));
 
-            Program.rooms[_session.roomID].DestroyRoom();
+                Program.rooms[_session.roomID]?.DestroyRoom();
+            }
         }
         public static void C_ReroadPacket(Session session, Packet packet)
         {
@@ -102,8 +110,9 @@ namespace GunnersServer
 
             S_ReroadPacket s_ReroadPacket = new();
 
-            Program.rooms[_session.roomID].AddJob
-                (() => Program.rooms[_session.roomID].Broadcast(s_ReroadPacket, _session.userID));
+            if (Program.rooms.ContainsKey(_session.roomID))
+                Program.rooms[_session.roomID]?.AddJob
+                    (() => Program.rooms[_session.roomID].Broadcast(s_ReroadPacket, _session.userID));
         }
     }
 }

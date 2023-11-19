@@ -1,5 +1,6 @@
 ﻿using Do.Net;
 using System;
+using System.Text;
 
 namespace GunnersServer.Packets
 {
@@ -22,8 +23,7 @@ namespace GunnersServer.Packets
             process += sizeof(ushort);
             process += sizeof(ushort);
             process += PacketUtility.ReadUShortData(buffer, process, out roomID);
-            host = BitConverter.ToBoolean(buffer.Array, buffer.Offset + process);
-            process += sizeof(bool);
+            process += ReadBoolData(buffer, process, out host);
             process += PacketUtility.ReadStringData(buffer, process, out name);
             process += PacketUtility.ReadUShortData(buffer, process, out agent);
             process += PacketUtility.ReadUShortData(buffer, process, out weapon);
@@ -37,14 +37,27 @@ namespace GunnersServer.Packets
             process += sizeof(ushort);
             process += PacketUtility.AppendUShortData(ID, buffer, process);
             process += PacketUtility.AppendUShortData(roomID, buffer, process);
-            Buffer.BlockCopy(BitConverter.GetBytes(host), 0, buffer.Array, buffer.Offset + process, sizeof(bool));
-            process += sizeof(bool);
+            process += AppendBoolData(host, buffer, process);
             process += PacketUtility.AppendStringData(name, buffer, process);
             process += PacketUtility.AppendUShortData(agent, buffer, process);
             process += PacketUtility.AppendUShortData(weapon, buffer, process);
             PacketUtility.AppendUShortData(process, buffer, 0);
 
             return UniqueBuffer.Close(process);
+        }
+
+        public static ushort AppendBoolData(bool data, ArraySegment<byte> buffer, int offset)
+        {
+            ushort length = sizeof(bool);
+            Buffer.BlockCopy(BitConverter.GetBytes(data), 0, buffer.Array, buffer.Offset + offset, length);
+
+            return length;
+        }
+
+        public static ushort ReadBoolData(ArraySegment<byte> buffer, int offset, out bool result)
+        {
+            result = BitConverter.ToBoolean(buffer.Array, buffer.Offset + offset);
+            return sizeof(bool);
         }
     }
 }

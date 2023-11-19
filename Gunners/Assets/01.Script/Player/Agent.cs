@@ -1,7 +1,4 @@
-using Do.Net;
 using GunnersServer.Packets;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Agent : MonoBehaviour
@@ -15,30 +12,44 @@ public class Agent : MonoBehaviour
         Instance.character = Instance.GetComponent<ICharacter>();
         Instance.rb = Instance.GetComponent<Rigidbody2D>();
         Instance.host = host;
+
+        if (host)
+            Instance.transform.position = Vector3.left * 5;
+        else
+            Instance.transform.position = Vector3.right * 5;
     }
 
     public IGun gun;
-    public JobQueue JobQueue;
     public ICharacter character;
+    public JobQueue JobQueue;
 
     public bool host;
 
-    [SerializeField] private float max = 0.1f;
+    private SpriteRenderer characterSR;
+    private SpriteRenderer gunSR;
+
+    [SerializeField] private float time = 0.2f;
     private float current = 0;
 
-    public bool move;
+    public bool move = true;
+
     private float moveX;
     private Rigidbody2D rb;
+
+    private Camera cam;
     private Vector2 mouseDir;
+
+    private float PastZ = 0;
+    private Vector2 PastPos = Vector2.zero;
+
+    private float Z => gun.transform.eulerAngles.z > 180 ? gun.transform.eulerAngles.z - 360f : gun.transform.eulerAngles.z;
 
     private void Start()
     {
-        if (host)
-            transform.position = Vector3.left * 5;
-        else 
-            transform.position = Vector3.right * 5;
+        characterSR = transform.Find("Sprite").GetComponent<SpriteRenderer>();
+        gunSR = gun.GetComponent<SpriteRenderer>();
 
-
+        cam = Camera.main;
     }
 
     private void OnDestroy()
@@ -49,22 +60,20 @@ public class Agent : MonoBehaviour
     public void Fire()
     {
         gun.Fire();
-
-        NetworkManager.Instance.Send(new C_FirePacket());
     }
 
     private void FixedUpdate()
     {
         current += Time.fixedDeltaTime;
 
-        if(current >= max)
+        if(current > time)
         {
             current = 0;
 
             C_MovePacket c_MovePacket = new C_MovePacket();
             c_MovePacket.x = transform.position.x;
             c_MovePacket.y = transform.position.y;
-            c_MovePacket.z = transform.eulerAngles.z;
+            c_MovePacket.z = Z;
 
             NetworkManager.Instance.Send(c_MovePacket);
         }
@@ -73,11 +82,14 @@ public class Agent : MonoBehaviour
     private void Update()
     {
         moveX = Input.GetAxisRaw("Horizontal");
+        mouseDir = (cam.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
 
-        Move(moveX);
+        Move(moveX * character.speed);
         Dir(mouseDir);
 
-        JobQueue.Flush();
+        if (Input.GetMouseButton(0)) Fire();
+
+        JobQueue?.Flush();
     }
 
     public void Move(float x)
@@ -90,7 +102,18 @@ public class Agent : MonoBehaviour
 
     public void Dir(Vector2 pos)
     {
+        gun.transform.right = pos;
 
+        if (Z > 90 || Z < -90)
+        {
+            characterSR.flipX = true;
+            gunSR.flipY = true;
+        }
+        else
+        {
+            characterSR.flipX = false;
+            gunSR.flipY = false;
+        }
     }
 
     public void SetHP(ushort hp)

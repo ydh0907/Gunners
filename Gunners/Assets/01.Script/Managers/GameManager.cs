@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
         PacketManager.Instance = gameObject.AddComponent<PacketManager>();
         LoadSceneManager.Instance = gameObject.AddComponent<LoadSceneManager>();
         AgentInfoManager.Instance = gameObject.AddComponent<AgentInfoManager>();
+        AgentInfoManager.Instance.Init();
     }
 
     private void Update()
@@ -73,8 +74,12 @@ public class GameManager : MonoBehaviour
         {
             onMatched?.Invoke();
 
+            Debug.Log(host);
+            Debug.Log(character);
+            Debug.Log(gun);
+
             Agent.Make(AgentInfoManager.Instance.Character.character, AgentInfoManager.Instance.Gun.gun, host);
-            EnemyDummy.Make(CharacterList.characters[character].character, GunList.guns[gun].gun, host);
+            EnemyDummy.Make(CharacterList.characters[character].character, GunList.guns[gun].gun, !host);
 
             Ready();
         });

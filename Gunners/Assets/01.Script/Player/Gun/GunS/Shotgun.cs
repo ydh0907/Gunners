@@ -1,6 +1,7 @@
 using GunnersServer.Packets;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Shotgun : IGun
@@ -12,7 +13,7 @@ public class Shotgun : IGun
         lastRate = 0;
         fireSpray = 20;
         reroadTime = 0.5f;
-        bulletSpeed = 20;
+        bulletSpeed = 24;
         bulletCount = 5;
         bulletPellet = 8;
         bulletDamage = 7;
@@ -35,7 +36,7 @@ public class Shotgun : IGun
                     base.bullet,
                     firePos.position,
                     Quaternion.Euler(transform.eulerAngles + new Vector3(0, 0, Random.Range(-fireSpray, fireSpray)))).GetComponent<Bullet>();
-                bullet.Fire(bulletSpeed, bulletDamage);
+                bullet.Fire(bulletSpeed, bulletDamage, dummy);
             }
 
             ani.SetTrigger("Fire");
@@ -44,6 +45,11 @@ public class Shotgun : IGun
             {
                 Reroad();
             }
+
+            lastRate = 0f;
+
+            if (!dummy)
+                NetworkManager.Instance.Send(new C_FirePacket());
         }
     }
 
@@ -58,6 +64,7 @@ public class Shotgun : IGun
         for (int i = 0; i < (bulletMaximum - bulletCount) * reroadTime; i++){
             yield return new WaitForSeconds(reroadTime);
         }
+        bulletCount = bulletMaximum;
         fireAble = true;
     }
 }
