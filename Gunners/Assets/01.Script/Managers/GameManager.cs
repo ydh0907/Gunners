@@ -20,6 +20,9 @@ public class GameManager : MonoBehaviour
 
     public JobQueue JobQueue = new();
 
+    public ushort id => NetworkManager.Instance.session.userID;
+    public string nickname => NetworkManager.Instance.session.nickname;
+
     private void Awake()
     {
         if (Instance != null) Destroy(gameObject);
@@ -37,7 +40,7 @@ public class GameManager : MonoBehaviour
         JobQueue.Flush();
     }
 
-    public void Kill()
+    public void End()
     {
         NetworkManager.Instance.Send(new C_GameEndPacket());
     }
@@ -49,12 +52,22 @@ public class GameManager : MonoBehaviour
 
     public void Win()
     {
+        Debug.Log("Win");
+
         onGameWin?.Invoke();
+        Agent.Instance.enabled = false;
+        Agent.Instance.rb.velocity = Vector3.zero;
+        EnemyDummy.Instance.character.Die();
     }
 
     public void Lose()
     {
+        Debug.Log("Lose");
+
         onGameLose?.Invoke();
+        EnemyDummy.Instance.enabled = false;
+        EnemyDummy.Instance.rb.velocity = Vector3.zero;
+        Agent.Instance.character.Die();
     }
 
     public void StartMatching()
@@ -68,7 +81,7 @@ public class GameManager : MonoBehaviour
         NetworkManager.Instance.Send(c_MatchingPacket);
     }
 
-    public void Matched(bool host, ushort character, ushort gun)
+    public void Matched(bool host, ushort character, ushort gun, string name)
     {
         LoadSceneManager.Instance.LoadSceneAsync("GameScene", () =>
         {
@@ -79,7 +92,7 @@ public class GameManager : MonoBehaviour
             Debug.Log(gun);
 
             Agent.Make(AgentInfoManager.Instance.Character.character, AgentInfoManager.Instance.Gun.gun, host);
-            EnemyDummy.Make(CharacterList.characters[character].character, GunList.guns[gun].gun, !host);
+            EnemyDummy.Make(CharacterList.characters[character].character, GunList.guns[gun].gun, !host, name);
 
             Ready();
         });

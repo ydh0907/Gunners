@@ -16,7 +16,7 @@ public class Shotgun : IGun
         bulletSpeed = 24;
         bulletCount = 5;
         bulletPellet = 8;
-        bulletDamage = 7;
+        bulletDamage = 15;
         bulletMaximum = 5;
     }
 

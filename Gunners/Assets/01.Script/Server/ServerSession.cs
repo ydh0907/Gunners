@@ -21,12 +21,10 @@ public class ServerSession : Session
 
     public override void OnPacketReceived(ArraySegment<byte> buffer)
     {
-        GameManager.Instance.JobQueue.Push(() => Debug.Log($"[Session] {buffer.Count} of byte Received"));
         PacketManager.Instance.HandlePacket(this, PacketManager.Instance.CreatePacket(buffer));
     }
 
     public override void OnSent(int length)
     {
-        GameManager.Instance.JobQueue.Push(() => Debug.Log($"[Session] {length} of byte Sent"));
     }
 }

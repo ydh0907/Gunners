@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using Do.Net;
+using GunnersServer.Packets;
 
 namespace GunnersServer
 {
@@ -39,20 +40,20 @@ namespace GunnersServer
 
             if(Program.rooms.ContainsKey(roomID))
             {
-                Program.rooms[roomID]?.DestroyRoom();
-                Program.rooms.Remove(roomID);
+                S_GameEndPacket packet = new S_GameEndPacket();
+                packet.winnerID = Program.rooms[roomID].GetOtherUser(userID).userID;
+
+                Program.rooms[roomID]?.DestroyRoom(packet);
             }
         }
 
         public override void OnPacketReceived(ArraySegment<byte> buffer)
         {
-            Console.WriteLine($"[Session] {buffer.Count} of byte Received");
             PacketManager.Instance.HandlePacket(this, PacketManager.Instance.CreatePacket(buffer));
         }
 
         public override void OnSent(int length)
         {
-            Console.WriteLine($"[Session] {length} of byte Sent");
         }
     }
 }

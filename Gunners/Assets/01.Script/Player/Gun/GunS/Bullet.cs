@@ -22,11 +22,13 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.TryGetComponent(out EnemyDummy enemy) && !dummy)
+        if (collision.TryGetComponent(out EnemyDummy enemy))
         {
-            enemy.Hit(damage);
+            if(!dummy)
+                enemy.Hit(damage);
+            Destroy(gameObject);
         }
-        else if (collision.CompareTag("Wall"))
+        else if (collision.CompareTag("Wall") || collision.CompareTag("Ground") || collision.CompareTag("Player"))
         {
             Destroy(gameObject);
         }

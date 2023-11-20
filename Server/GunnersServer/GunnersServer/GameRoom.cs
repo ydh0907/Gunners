@@ -22,7 +22,12 @@ namespace GunnersServer
         public void Flush()
         {
             if (!(host.Active == 1 && enterer.Active == 1))
-                DestroyRoom();
+            {
+                S_GameEndPacket packet = new S_GameEndPacket();
+                packet.winnerID = host.Active == 1 ? host.userID : enterer.userID;
+
+                DestroyRoom(packet);
+            }
 
             while(packetQueue.Count > 0)
             {
@@ -81,22 +86,12 @@ namespace GunnersServer
             return null;
         }
 
-        public void DestroyRoom()
+        public void DestroyRoom(Packet packet)
         {
             if (host.Active == 1)
-            {
-                S_GameEndPacket s_GameEndPacket = new();
-                s_GameEndPacket.winnerID = host.userID;
-
-                host.Send(s_GameEndPacket.Serialize());
-            }
+                host.Send(packet.Serialize());
             if (enterer.Active == 1)
-            {
-                S_GameEndPacket s_GameEndPacket = new();
-                s_GameEndPacket.winnerID = enterer.userID;
-
-                enterer.Send(s_GameEndPacket.Serialize());
-            }
+                enterer.Send(packet.Serialize());
 
             host.Reset();
             enterer.Reset();

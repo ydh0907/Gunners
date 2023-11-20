@@ -97,10 +97,7 @@ namespace GunnersServer
 
             if (Program.rooms.ContainsKey(_session.roomID))
             {
-                Program.rooms[_session.roomID]?.AddJob
-                    (() => Program.rooms[_session.roomID].BroadcastAll(s_GameEndPacket));
-
-                Program.rooms[_session.roomID]?.DestroyRoom();
+                Program.rooms[_session.roomID]?.AddJob(() => Program.rooms[_session.roomID]?.DestroyRoom(s_GameEndPacket));
             }
         }
         public static void C_ReroadPacket(Session session, Packet packet)

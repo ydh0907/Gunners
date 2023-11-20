@@ -6,7 +6,9 @@ public class Soldier : ICharacter
 {
     private void Awake()
     {
-        hp = 150;
+        base.Awake();
+        maxHp = 150;
+        hp = maxHp;
         armor = 40;
         speed = 7;
     }

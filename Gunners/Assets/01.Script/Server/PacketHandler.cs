@@ -1,6 +1,7 @@
 using Do.Net;
 using GunnersServer.Packets;
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PacketHandler
@@ -25,6 +26,8 @@ public class PacketHandler
     {
         ServerSession _session = session as ServerSession;
         S_GameEndPacket _packet = packet as S_GameEndPacket;
+
+        GameManager.Instance.JobQueue.Push(() => Debug.Log(_packet.winnerID + " : " + NetworkManager.Instance.session.userID));
 
         if(_packet.winnerID == _session.userID) GameManager.Instance.JobQueue.Push(() => GameManager.Instance.Win());
         else GameManager.Instance.JobQueue.Push(() => GameManager.Instance.Lose());
@@ -51,7 +54,7 @@ public class PacketHandler
         ServerSession _session = session as ServerSession;
         S_MatchedPacket _packet = packet as S_MatchedPacket;
 
-        GameManager.Instance.JobQueue.Push(() => GameManager.Instance.Matched(_packet.host, _packet.agent, _packet.weapon));
+        GameManager.Instance.JobQueue.Push(() => GameManager.Instance.Matched(_packet.host, _packet.agent, _packet.weapon, _packet.name));
     }
 
     public static void S_MovePacket(Session session, Packet packet)

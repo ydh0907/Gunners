@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +20,7 @@ public abstract class IGun : MonoBehaviour
     public ushort bulletPellet;
     public ushort bulletDamage;
     public ushort bulletMaximum;
+    public Action OnReroad = null;
 
     public abstract void Fire();
     public abstract void Reroad();

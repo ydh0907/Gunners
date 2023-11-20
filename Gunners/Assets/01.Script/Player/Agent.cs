@@ -1,4 +1,8 @@
 using GunnersServer.Packets;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Agent : MonoBehaviour
@@ -21,26 +25,29 @@ public class Agent : MonoBehaviour
 
     public IGun gun;
     public ICharacter character;
-    public JobQueue JobQueue;
 
     public bool host;
 
     private SpriteRenderer characterSR;
     private SpriteRenderer gunSR;
 
-    [SerializeField] private float time = 0.2f;
+    public float time = 0.1f;
     private float current = 0;
+    private float minAngle = 1f;
+    private float pastAngle = 0f;
 
     public bool move = true;
 
+    private bool isGround = true;
+    private float jumpPower = 600;
+    private List<Collider2D> cols = new();
+    private Collider2D[] overs = new Collider2D[0];
+
     private float moveX;
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
 
     private Camera cam;
     private Vector2 mouseDir;
-
-    private float PastZ = 0;
-    private Vector2 PastPos = Vector2.zero;
 
     private float Z => gun.transform.eulerAngles.z > 180 ? gun.transform.eulerAngles.z - 360f : gun.transform.eulerAngles.z;
 
@@ -50,10 +57,24 @@ public class Agent : MonoBehaviour
         gunSR = gun.GetComponent<SpriteRenderer>();
 
         cam = Camera.main;
+
+        GameManager.Instance.onGameLose += () => character.SetHP(0);
+    }
+
+    private void OnEnable()
+    {
+        gun?.gameObject.SetActive(true);
+    }
+
+    private void OnDisable()
+    {
+        gun?.gameObject.SetActive(false);
     }
 
     private void OnDestroy()
     {
+        GameManager.Instance.onGameLose -= () => character.SetHP(0);
+
         Instance = null;
     }
 
@@ -66,9 +87,10 @@ public class Agent : MonoBehaviour
     {
         current += Time.fixedDeltaTime;
 
-        if(current > time)
+        if(current > time || Mathf.Abs(pastAngle - Z) > minAngle)
         {
             current = 0;
+            pastAngle = Z;
 
             C_MovePacket c_MovePacket = new C_MovePacket();
             c_MovePacket.x = transform.position.x;
@@ -86,10 +108,9 @@ public class Agent : MonoBehaviour
 
         Move(moveX * character.speed);
         Dir(mouseDir);
+        Jump();
 
         if (Input.GetMouseButton(0)) Fire();
-
-        JobQueue?.Flush();
     }
 
     public void Move(float x)
@@ -113,6 +134,31 @@ public class Agent : MonoBehaviour
         {
             characterSR.flipX = false;
             gunSR.flipY = false;
+        }
+    }
+
+    private void Jump()
+    {
+        overs = Physics2D.OverlapBoxAll(transform.position + Vector3.down, new Vector2(1.1f, 0.2f), 0f, 1 << 7 | 1 << 8);
+
+        int count = overs.Count((c) =>
+        {
+            if(cols.Contains(c)) return false;
+            else return true;
+        });
+
+        if (count > 0)
+        {
+            isGround = true;
+        }
+
+        cols = overs.ToList();
+
+        if (isGround && Input.GetKeyDown(KeyCode.Space))
+        {
+            rb.velocity = new Vector2(rb.velocity.x, 0);
+            rb.AddForce(Vector2.up * jumpPower);
+            isGround = false;
         }
     }
 

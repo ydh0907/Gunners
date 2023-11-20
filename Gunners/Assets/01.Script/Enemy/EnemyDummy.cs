@@ -1,12 +1,13 @@
 using GunnersServer.Packets;
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyDummy : MonoBehaviour
 {
     public static EnemyDummy Instance = null;
 
-    public static void Make(ICharacter character, IGun gun, bool host)
+    public static void Make(ICharacter character, IGun gun, bool host, string name)
     {
         if (Instance != null) throw new Exception("instance is not null");
 
@@ -14,6 +15,7 @@ public class EnemyDummy : MonoBehaviour
         Instance.gun = Instantiate(gun, Instance.transform).GetComponent<IGun>();
         Instance.character = Instance.GetComponent<ICharacter>();
         Instance.host = host;
+        Instance.nickname = name;
 
         Instance.gun.dummy = true;
 
@@ -27,75 +29,55 @@ public class EnemyDummy : MonoBehaviour
     public ICharacter character;
 
     public bool host;
+    public string nickname;
 
-    private Rigidbody2D rb;
+    private Animator ani;
+    public Rigidbody2D rb;
     private SpriteRenderer characterSR;
     private SpriteRenderer gunSR;
 
-    private float time = 0;
-
-    private float sdelta = 0;
-    private float cdelta = 0;
-    private float delta => cdelta - sdelta;
-
-    Vector3 targetPos => currentPos - pastPos;
-    Vector3 targetDir => currentDir - pastDir + currentDir;
+    private float delta => Agent.Instance.time;
 
     Vector3 currentPos;
-    Vector3 currentDir;
+    float currentDir;
     Vector3 pastPos;
-    Vector3 pastDir;
 
     private float Z => gun.transform.eulerAngles.z > 180 ? gun.transform.eulerAngles.z - 360f : gun.transform.eulerAngles.z;
 
     private void Start()
     {
         currentPos = transform.position;
-        currentDir = transform.eulerAngles;
+        currentDir = transform.eulerAngles.z;
         pastPos = transform.position;
-        pastDir = transform.eulerAngles;
 
         rb = character.GetComponent<Rigidbody2D>();
         rb.gravityScale = 0f;
 
         gunSR = gun.GetComponent<SpriteRenderer>();
         characterSR = character.transform.Find("Sprite").GetComponent<SpriteRenderer>();
+        ani = characterSR.GetComponent<Animator>();
+    }
+    private void OnEnable()
+    {
+        gun?.gameObject.SetActive(true);
     }
 
-    private void FixedUpdate()
+    private void OnDisable()
     {
-        gun.transform.eulerAngles = Vector3.Lerp(currentDir, targetDir, time);
-
-        cdelta += Time.fixedDeltaTime;
-        time += Time.fixedDeltaTime * (1 / delta);
-    }
-
-    public void Hit(ushort damage)
-    {
-        character.SetHP((ushort)(character.hp - (damage * (character.armor / 100))));
-
-        C_HitPacket c_HitPacket = new C_HitPacket();
-        c_HitPacket.hp = character.hp;
-
-        NetworkManager.Instance.Send(c_HitPacket);
-
-        if(character.hp <= 0)
-        {
-            GameManager.Instance.Kill();
-        }
+        gun?.gameObject.SetActive(false);
     }
 
     public void Move(float x, float y, float angleZ)
     {
         pastPos = currentPos;
-        pastDir = currentDir;
 
         currentPos.x = x;
         currentPos.y = y;
-        currentDir = new Vector3(0, 0, angleZ);
+        currentDir = angleZ;
 
-        time = 0f;
-        sdelta = cdelta;
+        transform.position = pastPos;
+        rb.velocity = (currentPos - pastPos) * (1 / delta);
+        gun.transform.eulerAngles = new Vector3(0, 0, currentDir);
 
         if (Z > 90 || Z < -90)
         {
@@ -107,8 +89,59 @@ public class EnemyDummy : MonoBehaviour
             characterSR.flipX = false;
             gunSR.flipY = false;
         }
+    }
 
-        rb.velocity = targetPos;
+    private void Update()
+    {
+        SetAni();
+    }
+
+    private void SetAni()
+    {
+        if (rb.velocity.magnitude > 0.1f) ani.SetBool("Run", true);
+        else ani.SetBool("Run", false);
+
+        if (rb.velocity.y > 0.1f || rb.velocity.y < -0.1f) ani.SetBool("Jump", true);
+        else ani.SetBool("Jump", false);
+
+        if (ani.GetBool("Jump"))
+        {
+            if (Physics2D.Raycast(transform.position, Vector2.left, 0.6f, 1 << 7))
+            {
+                characterSR.flipX = true;
+                ani.SetBool("Slide", true);
+                rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -0.5f, float.MaxValue));
+            }
+            else if (Physics2D.Raycast(transform.position, Vector2.right, 0.6f, 1 << 7))
+            {
+                characterSR.flipX = false;
+                ani.SetBool("Slide", true);
+                rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -0.5f, float.MaxValue));
+            }
+            else
+            {
+                ani.SetBool("Slide", false);
+            }
+        }
+        else
+        {
+            ani.SetBool("Slide", false);
+        }
+    }
+
+    public void Hit(ushort damage)
+    {
+        character.SetHP((int)Mathf.Clamp((character.hp - (damage * (character.armor / 100))), 0, ushort.MaxValue));
+
+        C_HitPacket c_HitPacket = new C_HitPacket();
+        c_HitPacket.hp = (ushort)character.hp;
+
+        NetworkManager.Instance.Send(c_HitPacket);
+
+        if(character.hp <= 0)
+        {
+            GameManager.Instance.End();
+        }
     }
 
     public void Fire()

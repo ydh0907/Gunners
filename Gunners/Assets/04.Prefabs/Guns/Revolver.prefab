@@ -26,7 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7377407658530677780}
-  m_LocalRotation: {x: 0, y: 0, z: 0.39583138, w: 0.9183232}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -73,8 +73,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -615844259
+  m_SortingLayer: 1
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 8febf06b435ac254790c58b9798181e9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -102,6 +102,17 @@ MonoBehaviour:
   bullet: {fileID: 2377645089340152776, guid: ca3302f408fd03d4b87e1f8b37bb70e0, type: 3}
   firePos: {fileID: 7377407659440767734}
   ani: {fileID: 7377407658530677777}
+  dummy: 0
+  fireAble: 0
+  fireRate: 0
+  lastRate: 0
+  fireSpray: 0
+  reroadTime: 0
+  bulletSpeed: 0
+  bulletCount: 0
+  bulletPellet: 0
+  bulletDamage: 0
+  bulletMaximum: 0
 --- !u!95 &7377407658530677777
 Animator:
   serializedVersion: 5

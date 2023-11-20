@@ -6,7 +6,9 @@ public class Tank : ICharacter
 {
     private void Awake()
     {
-        hp = 200;
+        base.Awake();
+        maxHp = 200;
+        hp = maxHp;
         armor = 70;
         speed = 5;
     }

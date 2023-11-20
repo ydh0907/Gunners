@@ -6,7 +6,9 @@ public class Scout : ICharacter
 {
     private void Awake()
     {
-        hp = 100;
+        base.Awake();
+        maxHp = 100;
+        hp = maxHp;
         armor = 20;
         speed = 10;
     }

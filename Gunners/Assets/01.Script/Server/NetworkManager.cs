@@ -51,6 +51,8 @@ public class NetworkManager : MonoBehaviour
         yield return new WaitUntil(() => session.Active != 0);
 
         session.nickname = GameObject.Find("Name").GetComponent<TMPro.TMP_InputField>().text;
+        if(session.nickname.Length > 16)
+            session.nickname.Remove(15);
         if (session.nickname == "") session.nickname = "unknown";
 
         C_ConnectPacket c_ConnectPacket = new();
