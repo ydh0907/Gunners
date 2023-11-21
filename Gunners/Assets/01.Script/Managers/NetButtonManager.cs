@@ -11,4 +11,9 @@ public class NetButtonManager : MonoBehaviour
         Loading.gameObject.SetActive(true);
         GameManager.Instance.StartMatching();
     }
+
+    public void LoadScene(int num)
+    {
+        LoadSceneManager.Instance.LoadSceneAsync(num, null);
+    }
 }

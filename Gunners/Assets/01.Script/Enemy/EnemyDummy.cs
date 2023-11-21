@@ -20,21 +20,20 @@ public class EnemyDummy : MonoBehaviour
         Instance.gun.dummy = true;
 
         if (host)
-            Instance.transform.position = Vector3.left * 5;
+            Instance.transform.position = Map.Host;
         else
-            Instance.transform.position = Vector3.right * 5;
+            Instance.transform.position = Map.Enterer;
     }
 
     public IGun gun;
     public ICharacter character;
 
     public bool host;
-    public string nickname;
+    public string nickname = "";
 
     private Animator ani;
     public Rigidbody2D rb;
-    private SpriteRenderer characterSR;
-    private SpriteRenderer gunSR;
+    private SpriteRenderer sr;
 
     private float delta => Agent.Instance.time;
 
@@ -50,16 +49,9 @@ public class EnemyDummy : MonoBehaviour
         currentDir = transform.eulerAngles.z;
         pastPos = transform.position;
 
+        sr = transform.Find("Sprite").GetComponent<SpriteRenderer>();
         rb = character.GetComponent<Rigidbody2D>();
         rb.gravityScale = 0f;
-
-        gunSR = gun.GetComponent<SpriteRenderer>();
-        characterSR = character.transform.Find("Sprite").GetComponent<SpriteRenderer>();
-        ani = characterSR.GetComponent<Animator>();
-    }
-    private void OnEnable()
-    {
-        gun?.gameObject.SetActive(true);
     }
 
     private void OnDisable()
@@ -81,57 +73,19 @@ public class EnemyDummy : MonoBehaviour
 
         if (Z > 90 || Z < -90)
         {
-            characterSR.flipX = true;
-            gunSR.flipY = true;
+            sr.flipX = true;
+            gun.transform.localScale = new Vector3(1, -1, 1);
         }
         else
         {
-            characterSR.flipX = false;
-            gunSR.flipY = false;
-        }
-    }
-
-    private void Update()
-    {
-        SetAni();
-    }
-
-    private void SetAni()
-    {
-        if (rb.velocity.magnitude > 0.1f) ani.SetBool("Run", true);
-        else ani.SetBool("Run", false);
-
-        if (rb.velocity.y > 0.1f || rb.velocity.y < -0.1f) ani.SetBool("Jump", true);
-        else ani.SetBool("Jump", false);
-
-        if (ani.GetBool("Jump"))
-        {
-            if (Physics2D.Raycast(transform.position, Vector2.left, 0.6f, 1 << 7))
-            {
-                characterSR.flipX = true;
-                ani.SetBool("Slide", true);
-                rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -0.5f, float.MaxValue));
-            }
-            else if (Physics2D.Raycast(transform.position, Vector2.right, 0.6f, 1 << 7))
-            {
-                characterSR.flipX = false;
-                ani.SetBool("Slide", true);
-                rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -0.5f, float.MaxValue));
-            }
-            else
-            {
-                ani.SetBool("Slide", false);
-            }
-        }
-        else
-        {
-            ani.SetBool("Slide", false);
+            sr.flipX = false;
+            gun.transform.localScale = Vector3.one;
         }
     }
 
     public void Hit(ushort damage)
     {
-        character.SetHP((int)Mathf.Clamp((character.hp - (damage * (character.armor / 100))), 0, ushort.MaxValue));
+        character.SetHP((int)Mathf.Clamp(character.hp - damage * (100 - character.armor) * 0.01f, 0, ushort.MaxValue));
 
         C_HitPacket c_HitPacket = new C_HitPacket();
         c_HitPacket.hp = (ushort)character.hp;

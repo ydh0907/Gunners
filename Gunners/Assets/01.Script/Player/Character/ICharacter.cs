@@ -18,14 +18,14 @@ public abstract class ICharacter : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer sr;
 
-    protected void Awake()
+    protected void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         ani = transform.Find("Sprite").GetComponent<Animator>();
         sr = transform.Find("Sprite").GetComponent<SpriteRenderer>();
     }
 
-    protected void Update()
+    protected void LateUpdate()
     {
         SetAni();
     }

@@ -61,7 +61,8 @@ public class Shotgun : IGun
     private IEnumerator Reroading()
     {
         fireAble = false;
-        for (int i = 0; i < (bulletMaximum - bulletCount) * reroadTime; i++){
+        OnReroad?.Invoke((bulletMaximum - bulletCount) * reroadTime);
+        for (int i = 0; i < (bulletMaximum - bulletCount); i++){
             yield return new WaitForSeconds(reroadTime);
         }
         bulletCount = bulletMaximum;

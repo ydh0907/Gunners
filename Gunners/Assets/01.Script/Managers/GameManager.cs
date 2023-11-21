@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GunnersServer.Packets;
+using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    public static GameManager Instance = null;
 
     [SerializeField] public CharacterListSO CharacterList;
     [SerializeField] public GunListSO GunList;
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour
 
     public ushort id => NetworkManager.Instance.session.userID;
     public string nickname => NetworkManager.Instance.session.nickname;
+    public ushort map = 0;
 
     private void Awake()
     {
@@ -52,8 +54,6 @@ public class GameManager : MonoBehaviour
 
     public void Win()
     {
-        Debug.Log("Win");
-
         onGameWin?.Invoke();
         Agent.Instance.enabled = false;
         Agent.Instance.rb.velocity = Vector3.zero;
@@ -62,8 +62,6 @@ public class GameManager : MonoBehaviour
 
     public void Lose()
     {
-        Debug.Log("Lose");
-
         onGameLose?.Invoke();
         EnemyDummy.Instance.enabled = false;
         EnemyDummy.Instance.rb.velocity = Vector3.zero;
@@ -81,15 +79,13 @@ public class GameManager : MonoBehaviour
         NetworkManager.Instance.Send(c_MatchingPacket);
     }
 
-    public void Matched(bool host, ushort character, ushort gun, string name)
+    public void Matched(bool host, ushort character, ushort gun, string name, ushort map)
     {
+        this.map = map;
+
         LoadSceneManager.Instance.LoadSceneAsync("GameScene", () =>
         {
             onMatched?.Invoke();
-
-            Debug.Log(host);
-            Debug.Log(character);
-            Debug.Log(gun);
 
             Agent.Make(AgentInfoManager.Instance.Character.character, AgentInfoManager.Instance.Gun.gun, host);
             EnemyDummy.Make(CharacterList.characters[character].character, GunList.guns[gun].gun, !host, name);

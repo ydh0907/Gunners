@@ -18,18 +18,15 @@ public class Agent : MonoBehaviour
         Instance.host = host;
 
         if (host)
-            Instance.transform.position = Vector3.left * 5;
+            Instance.transform.position = Map.Host;
         else
-            Instance.transform.position = Vector3.right * 5;
+            Instance.transform.position = Map.Enterer;
     }
 
     public IGun gun;
     public ICharacter character;
 
     public bool host;
-
-    private SpriteRenderer characterSR;
-    private SpriteRenderer gunSR;
 
     public float time = 0.1f;
     private float current = 0;
@@ -48,22 +45,16 @@ public class Agent : MonoBehaviour
 
     private Camera cam;
     private Vector2 mouseDir;
+    private SpriteRenderer sr;
 
     private float Z => gun.transform.eulerAngles.z > 180 ? gun.transform.eulerAngles.z - 360f : gun.transform.eulerAngles.z;
 
     private void Start()
     {
-        characterSR = transform.Find("Sprite").GetComponent<SpriteRenderer>();
-        gunSR = gun.GetComponent<SpriteRenderer>();
-
         cam = Camera.main;
+        sr = transform.Find("Sprite").GetComponent<SpriteRenderer>();
 
         GameManager.Instance.onGameLose += () => character.SetHP(0);
-    }
-
-    private void OnEnable()
-    {
-        gun?.gameObject.SetActive(true);
     }
 
     private void OnDisable()
@@ -127,13 +118,13 @@ public class Agent : MonoBehaviour
 
         if (Z > 90 || Z < -90)
         {
-            characterSR.flipX = true;
-            gunSR.flipY = true;
+            sr.flipX = true;
+            gun.transform.localScale = new Vector3(1, -1, 1);
         }
         else
         {
-            characterSR.flipX = false;
-            gunSR.flipY = false;
+            sr.flipX = false;
+            gun.transform.localScale = Vector3.one;
         }
     }
 

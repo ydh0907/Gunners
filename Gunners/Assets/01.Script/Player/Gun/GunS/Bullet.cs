@@ -28,7 +28,7 @@ public class Bullet : MonoBehaviour
                 enemy.Hit(damage);
             Destroy(gameObject);
         }
-        else if (collision.CompareTag("Wall") || collision.CompareTag("Ground") || collision.CompareTag("Player"))
+        else if (collision.CompareTag("Wall") || collision.CompareTag("Ground") || (collision.CompareTag("Player") && dummy))
         {
             Destroy(gameObject);
         }

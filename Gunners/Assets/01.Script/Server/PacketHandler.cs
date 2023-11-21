@@ -27,8 +27,6 @@ public class PacketHandler
         ServerSession _session = session as ServerSession;
         S_GameEndPacket _packet = packet as S_GameEndPacket;
 
-        GameManager.Instance.JobQueue.Push(() => Debug.Log(_packet.winnerID + " : " + NetworkManager.Instance.session.userID));
-
         if(_packet.winnerID == _session.userID) GameManager.Instance.JobQueue.Push(() => GameManager.Instance.Win());
         else GameManager.Instance.JobQueue.Push(() => GameManager.Instance.Lose());
     }
@@ -54,7 +52,7 @@ public class PacketHandler
         ServerSession _session = session as ServerSession;
         S_MatchedPacket _packet = packet as S_MatchedPacket;
 
-        GameManager.Instance.JobQueue.Push(() => GameManager.Instance.Matched(_packet.host, _packet.agent, _packet.weapon, _packet.name));
+        GameManager.Instance.JobQueue.Push(() => GameManager.Instance.Matched(_packet.host, _packet.agent, _packet.weapon, _packet.name, _packet.map));
     }
 
     public static void S_MovePacket(Session session, Packet packet)
@@ -62,7 +60,7 @@ public class PacketHandler
         ServerSession _session = session as ServerSession;
         S_MovePacket _packet = packet as S_MovePacket;
 
-        GameManager.Instance.JobQueue.Push(() => EnemyDummy.Instance.Move(_packet.x, _packet.y, _packet.z));
+        GameManager.Instance?.JobQueue?.Push(() => EnemyDummy.Instance?.Move(_packet.x, _packet.y, _packet.z));
     }
 
     public static void S_ReroadPacket(Session session, Packet packet)

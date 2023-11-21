@@ -20,7 +20,7 @@ public abstract class IGun : MonoBehaviour
     public ushort bulletPellet;
     public ushort bulletDamage;
     public ushort bulletMaximum;
-    public Action OnReroad = null;
+    public Action<float> OnReroad = null;
 
     public abstract void Fire();
     public abstract void Reroad();

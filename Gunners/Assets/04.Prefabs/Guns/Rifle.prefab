@@ -43,6 +43,8 @@ GameObject:
   - component: {fileID: 5977202473166540774}
   - component: {fileID: 5977202473166540775}
   - component: {fileID: 5977202473166540792}
+  - component: {fileID: 7515835179181933402}
+  - component: {fileID: 6325491577271760758}
   m_Layer: 0
   m_Name: Rifle
   m_TagString: Untagged
@@ -165,3 +167,28 @@ MonoBehaviour:
   bulletPellet: 0
   bulletDamage: 0
   bulletMaximum: 0
+--- !u!114 &7515835179181933402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5977202473166540793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9162471581f8e4d41b4dc78c5c8a55e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 3168704621621860449, guid: 7b7f6728e5dd63144ae75ef19387b16b, type: 3}
+--- !u!114 &6325491577271760758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5977202473166540793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5347564c2603d4ca96c9b472474164, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

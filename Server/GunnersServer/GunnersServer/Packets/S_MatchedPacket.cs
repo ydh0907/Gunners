@@ -15,6 +15,7 @@ namespace GunnersServer.Packets
         public string name;
         public ushort agent;
         public ushort weapon;
+        public ushort map;
 
         public override void Deserialize(ArraySegment<byte> buffer)
         {
@@ -27,6 +28,7 @@ namespace GunnersServer.Packets
             process += PacketUtility.ReadStringData(buffer, process, out name);
             process += PacketUtility.ReadUShortData(buffer, process, out agent);
             process += PacketUtility.ReadUShortData(buffer, process, out weapon);
+            process += PacketUtility.ReadUShortData(buffer, process, out map);
         }
 
         public override ArraySegment<byte> Serialize()
@@ -41,6 +43,7 @@ namespace GunnersServer.Packets
             process += PacketUtility.AppendStringData(name, buffer, process);
             process += PacketUtility.AppendUShortData(agent, buffer, process);
             process += PacketUtility.AppendUShortData(weapon, buffer, process);
+            process += PacketUtility.AppendUShortData(map, buffer, process);
             PacketUtility.AppendUShortData(process, buffer, 0);
 
             return UniqueBuffer.Close(process);

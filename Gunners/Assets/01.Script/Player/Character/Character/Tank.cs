@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class Tank : ICharacter
 {
-    private void Awake()
+    protected void Awake()
     {
-        base.Awake();
         maxHp = 200;
         hp = maxHp;
         armor = 70;

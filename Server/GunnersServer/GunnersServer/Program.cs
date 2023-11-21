@@ -104,8 +104,12 @@ namespace GunnersServer
                 matchingRoom.host.roomID = matchingRoom.roomID;
                 matchingRoom.enterer.roomID = matchingRoom.roomID;
 
+                Random rand = new Random();
+                ushort map = (ushort)rand.Next(0, 4);
+
                 S_MatchedPacket s_MatchedPacketHost = new();
                 s_MatchedPacketHost.roomID = matchingRoom.roomID;
+                s_MatchedPacketHost.map = map;
 
                 s_MatchedPacketHost.host = true;
                 s_MatchedPacketHost.name = matchingRoom.enterer.nickname;
@@ -116,6 +120,7 @@ namespace GunnersServer
 
                 S_MatchedPacket s_MatchedPacketEnterer = new();
                 s_MatchedPacketEnterer.roomID = matchingRoom.roomID;
+                s_MatchedPacketEnterer.map = map;
 
                 s_MatchedPacketEnterer.host = false;
                 s_MatchedPacketEnterer.name = matchingRoom.host.nickname;

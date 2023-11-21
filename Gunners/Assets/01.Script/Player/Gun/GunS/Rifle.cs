@@ -59,6 +59,7 @@ public class Rifle : IGun
     private IEnumerator Reroading()
     {
         fireAble = false;
+        OnReroad?.Invoke(reroadTime);
         yield return new WaitForSeconds(reroadTime);
         bulletCount = bulletMaximum;
         fireAble = true;
