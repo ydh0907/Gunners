@@ -1,6 +1,5 @@
 using GunnersServer.Packets;
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyDummy : MonoBehaviour
@@ -40,14 +39,18 @@ public class EnemyDummy : MonoBehaviour
     Vector3 currentPos;
     float currentDir;
     Vector3 pastPos;
+    float pastDir;
 
     private float Z => gun.transform.eulerAngles.z > 180 ? gun.transform.eulerAngles.z - 360f : gun.transform.eulerAngles.z;
 
     private void Start()
     {
+        gameObject.tag = "Enemy";
+
         currentPos = transform.position;
         currentDir = transform.eulerAngles.z;
         pastPos = transform.position;
+        pastDir = transform.eulerAngles.z;
 
         sr = transform.Find("Sprite").GetComponent<SpriteRenderer>();
         rb = character.GetComponent<Rigidbody2D>();
@@ -59,9 +62,15 @@ public class EnemyDummy : MonoBehaviour
         gun?.gameObject.SetActive(false);
     }
 
+    private void FixedUpdate()
+    {
+        gun.transform.eulerAngles += new Vector3(0, 0, GetAngle(currentDir, pastDir) * Time.fixedDeltaTime * (1 / delta));
+    }
+
     public void Move(float x, float y, float angleZ)
     {
         pastPos = currentPos;
+        pastDir = currentDir;
 
         currentPos.x = x;
         currentPos.y = y;
@@ -69,7 +78,7 @@ public class EnemyDummy : MonoBehaviour
 
         transform.position = pastPos;
         rb.velocity = (currentPos - pastPos) * (1 / delta);
-        gun.transform.eulerAngles = new Vector3(0, 0, currentDir);
+        gun.transform.eulerAngles = new Vector3(0, 0, pastDir);
 
         if (Z > 90 || Z < -90)
         {
@@ -112,5 +121,31 @@ public class EnemyDummy : MonoBehaviour
     private void OnDestroy()
     {
         Instance = null;
+    }
+
+    private float GetAngle(float target, float current)
+    {
+        if (target < 0) target += 360;
+        if (current < 0) current += 360;
+
+        if(target > current)
+        {
+            float result = target - current;
+
+            if (result > 180) result -= 360;
+
+            return result;
+        }
+
+        if(target < current)
+        {
+            float result = target - current;
+
+            if (result < -180) result += 360;
+
+            return result;
+        }
+
+        return 0;
     }
 }

@@ -32,8 +32,12 @@ namespace GunnersServer
             while(packetQueue.Count > 0)
             {
                 Tuple<ushort, Packet> tuple = packetQueue.Dequeue();
+
+                if (tuple == null) continue;
+
                 ushort id = tuple.Item1;
                 Packet packet = tuple.Item2;
+
                 if (id == host.userID) enterer.Send(packet.Serialize());
                 else if(id == enterer.userID) host.Send(packet.Serialize());
                 else if(id == ushort.MaxValue)

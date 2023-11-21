@@ -1,11 +1,11 @@
 using GunnersServer.Packets;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Shotgun : IGun
 {
+    private AudioSource audio;
+
     private void Awake()
     {
         fireAble = true;
@@ -16,8 +16,10 @@ public class Shotgun : IGun
         bulletSpeed = 24;
         bulletCount = 5;
         bulletPellet = 8;
-        bulletDamage = 15;
+        bulletDamage = 12;
         bulletMaximum = 5;
+
+        audio = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -29,7 +31,7 @@ public class Shotgun : IGun
     {
         if (fireAble && lastRate > fireRate)
         {
-            bulletCount--;
+            --bulletCount;
             for (int i = 0; i < bulletPellet; i++)
             {
                 Bullet bullet = Instantiate(
@@ -48,13 +50,20 @@ public class Shotgun : IGun
 
             lastRate = 0f;
 
+            audio.Play();
+
             if (!dummy)
+            {
                 NetworkManager.Instance.Send(new C_FirePacket());
+                CameraManager.Instance?.AddPerlin(new Perlin(bulletDamage * bulletPellet * 0.1f, 0.1f, 0.1f));
+            }
         }
     }
 
     public override void Reroad()
     {
+        if (!dummy)
+            NetworkManager.Instance.Send(new C_ReroadPacket());
         StartCoroutine(Reroading());
     }
 

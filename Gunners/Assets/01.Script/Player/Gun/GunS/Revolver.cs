@@ -1,22 +1,25 @@
 using GunnersServer.Packets;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Revolver : IGun
 {
+    private AudioSource audio;
+
     private void Awake()
     {
         fireAble = true;
-        fireRate = 0.2f;
+        fireRate = 0.7f;
         lastRate = 0;
-        fireSpray = 10f;
+        fireSpray = 15f;
         reroadTime = 2;
         bulletSpeed = 32;
         bulletCount = 6;
         bulletPellet = 1;
-        bulletDamage = 25;
+        bulletDamage = 40;
         bulletMaximum = 6;
+
+        audio = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -47,13 +50,20 @@ public class Revolver : IGun
 
             lastRate = 0f;
 
+            audio.Play();
+
             if (!dummy)
+            {
                 NetworkManager.Instance.Send(new C_FirePacket());
+                CameraManager.Instance?.AddPerlin(new Perlin(bulletDamage * bulletPellet * 0.1f, 0.1f, 0.1f));
+            }
         }
     }
 
     public override void Reroad()
     {
+        if (!dummy)
+            NetworkManager.Instance.Send(new C_ReroadPacket());
         StartCoroutine(Reroading());
     }
 

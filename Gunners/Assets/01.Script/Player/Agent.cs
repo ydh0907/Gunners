@@ -1,6 +1,4 @@
 using GunnersServer.Packets;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -32,8 +30,6 @@ public class Agent : MonoBehaviour
     private float current = 0;
     private float minAngle = 1f;
     private float pastAngle = 0f;
-
-    public bool move = true;
 
     private bool isGround = true;
     private float jumpPower = 600;
@@ -78,7 +74,7 @@ public class Agent : MonoBehaviour
     {
         current += Time.fixedDeltaTime;
 
-        if(current > time || Mathf.Abs(pastAngle - Z) > minAngle)
+        if(current > time)
         {
             current = 0;
             pastAngle = Z;
@@ -106,10 +102,7 @@ public class Agent : MonoBehaviour
 
     public void Move(float x)
     {
-        if (move)
-        {
-            rb.velocity = new Vector2(x, rb.velocity.y);
-        }
+        rb.velocity = new Vector2(x, rb.velocity.y);
     }
 
     public void Dir(Vector2 pos)
@@ -130,7 +123,7 @@ public class Agent : MonoBehaviour
 
     private void Jump()
     {
-        overs = Physics2D.OverlapBoxAll(transform.position + Vector3.down, new Vector2(1.1f, 0.2f), 0f, 1 << 7 | 1 << 8);
+        overs = Physics2D.OverlapBoxAll(transform.position + new Vector3(0, -0.7f, 0), new Vector2(1.1f, 1f), 0f, 1 << 7 | 1 << 8);
 
         int count = overs.Count((c) =>
         {
@@ -155,6 +148,8 @@ public class Agent : MonoBehaviour
 
     public void SetHP(ushort hp)
     {
+        CameraManager.Instance?.AddPerlin(new Perlin(character.hp - hp, 0.1f, 0.1f));
+
         character.SetHP(hp);
     }
 }

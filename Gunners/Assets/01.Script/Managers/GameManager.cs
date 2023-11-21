@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GunnersServer.Packets;
-using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour
 {
@@ -31,6 +29,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+        SoundManager.Instance = gameObject.AddComponent<SoundManager>();
         PacketManager.Instance = gameObject.AddComponent<PacketManager>();
         LoadSceneManager.Instance = gameObject.AddComponent<LoadSceneManager>();
         AgentInfoManager.Instance = gameObject.AddComponent<AgentInfoManager>();

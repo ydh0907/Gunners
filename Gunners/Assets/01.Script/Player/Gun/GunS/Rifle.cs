@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Rifle : IGun
 {
+    private AudioSource audio;
+
     private void Awake()
     {
         fireAble = true;
@@ -14,8 +16,10 @@ public class Rifle : IGun
         bulletSpeed = 40;
         bulletCount = 30;
         bulletPellet = 1;
-        bulletDamage = 10;
+        bulletDamage = 15;
         bulletMaximum = 30;
+
+        audio = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -45,14 +49,21 @@ public class Rifle : IGun
             }
 
             lastRate = 0f;
-            
-            if(!dummy)
+
+            audio.Play();
+
+            if (!dummy)
+            {
                 NetworkManager.Instance.Send(new C_FirePacket());
+                CameraManager.Instance?.AddPerlin(new Perlin(bulletDamage * bulletPellet * 0.1f, 0.1f, 0.1f));
+            }
         }
     }
 
     public override void Reroad()
     {
+        if (!dummy)
+            NetworkManager.Instance.Send(new C_ReroadPacket());
         StartCoroutine(Reroading());
     }
 

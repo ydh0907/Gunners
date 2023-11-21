@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -22,10 +20,9 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.TryGetComponent(out EnemyDummy enemy))
+        if (collision.TryGetComponent(out EnemyDummy enemy) && !dummy)
         {
-            if(!dummy)
-                enemy.Hit(damage);
+            enemy.Hit(damage);
             Destroy(gameObject);
         }
         else if (collision.CompareTag("Wall") || collision.CompareTag("Ground") || (collision.CompareTag("Player") && dummy))
