@@ -6,6 +6,7 @@ public class Blood : MonoBehaviour
 {
     private Image image;
     private float blood = 0;
+    private int past;
 
     private void Awake()
     {
@@ -45,6 +46,7 @@ public class Blood : MonoBehaviour
 
     private void SetBlood(int hp)
     {
-        blood += 1 - (float)hp / Agent.Instance.character.maxHp;
+        blood += (1 - (float)hp / Agent.Instance.character.maxHp) * 0.5f + (1 - (float)hp / past) * 0.5f;
+        past = hp;
     }
 }

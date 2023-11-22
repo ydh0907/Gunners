@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Soldier
   m_EditorClassIdentifier: 
   character: {fileID: 508782678435835358, guid: 0f7f396627b98f04884ae449f8265505, type: 3}
+  sprite: {fileID: 21300000, guid: 16c2c15c8130c554eb8df0afd219e957, type: 3}

@@ -4,22 +4,19 @@ using UnityEngine;
 
 public class Shotgun : IGun
 {
-    private AudioSource audio;
-
     private void Awake()
     {
         fireAble = true;
         fireRate = 0.5f;
         lastRate = 0;
         fireSpray = 20;
+        fireSound = 0.3f;
         reroadTime = 0.5f;
         bulletSpeed = 24;
         bulletCount = 5;
         bulletPellet = 8;
         bulletDamage = 12;
         bulletMaximum = 5;
-
-        audio = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -50,7 +47,7 @@ public class Shotgun : IGun
 
             lastRate = 0f;
 
-            audio.Play();
+            AudioManager.Instance.Play(clip, fireSound);
 
             if (!dummy)
             {

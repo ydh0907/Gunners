@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Rifle
   m_EditorClassIdentifier: 
   gun: {fileID: 5977202473166540792, guid: b6c96a1592e6f5d4a937b171a4599de3, type: 3}
+  sprite: {fileID: 21300000, guid: c6a4d7d54d96f9946b58e87b7b2ed8e7, type: 3}

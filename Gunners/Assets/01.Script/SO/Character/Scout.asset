@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Scout
   m_EditorClassIdentifier: 
   character: {fileID: 8506404406841176433, guid: 362aa04cd6e7a864794c109fc7ec93d1, type: 3}
+  sprite: {fileID: 21300000, guid: f2260696624add3408046a5b2534f202, type: 3}

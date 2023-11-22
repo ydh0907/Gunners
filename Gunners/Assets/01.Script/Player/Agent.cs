@@ -2,6 +2,7 @@ using GunnersServer.Packets;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Agent : MonoBehaviour
 {
@@ -28,8 +29,6 @@ public class Agent : MonoBehaviour
 
     public float time = 0.1f;
     private float current = 0;
-    private float minAngle = 1f;
-    private float pastAngle = 0f;
 
     private bool isGround = true;
     private float jumpPower = 600;
@@ -77,7 +76,6 @@ public class Agent : MonoBehaviour
         if(current > time)
         {
             current = 0;
-            pastAngle = Z;
 
             C_MovePacket c_MovePacket = new C_MovePacket();
             c_MovePacket.x = transform.position.x;

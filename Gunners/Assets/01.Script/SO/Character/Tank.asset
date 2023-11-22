@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Tank
   m_EditorClassIdentifier: 
   character: {fileID: 2738627481127445361, guid: b9767a198c42fde4fa67d0b5174afb74, type: 3}
+  sprite: {fileID: 21300000, guid: 1ca6018a4ad7fd2438d9c433a4e07b41, type: 3}

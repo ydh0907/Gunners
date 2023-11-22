@@ -1,13 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AgentInfoManager : MonoBehaviour
 {
     public static AgentInfoManager Instance;
 
-    public Action OnValueChange = null;
+    public Action<CharacterSO, GunSO> OnValueChange = null;
 
     private GunSO gun = null;
     private CharacterSO character = null;
@@ -27,7 +25,7 @@ public class AgentInfoManager : MonoBehaviour
         set
         {
             Instance.character = value;
-            OnValueChange?.Invoke();
+            OnValueChange?.Invoke(Character, Gun);
         }
     }
 
@@ -37,7 +35,7 @@ public class AgentInfoManager : MonoBehaviour
         set
         {
             Instance.gun = value;
-            OnValueChange?.Invoke();
+            OnValueChange?.Invoke(Character, Gun);
         }
     }
 

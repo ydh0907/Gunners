@@ -13,6 +13,5 @@ public class Nickname : MonoBehaviour
             text.text = GameManager.Instance.nickname;
         else if (transform.parent.TryGetComponent(out EnemyDummy enemy))
             text.text = enemy.nickname;
-        else text.text = "...";
     }
 }

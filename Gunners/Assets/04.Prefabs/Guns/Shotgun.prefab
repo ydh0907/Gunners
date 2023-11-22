@@ -135,6 +135,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bullet: {fileID: 1848679940967641958, guid: 29e5cddb1737a714184f67660315dcbb, type: 3}
   firePos: {fileID: 5881579151941880090}
+  clip: {fileID: 8300000, guid: ab1ecef2dedcca948b0c95614e680c5a, type: 3}
   ani: {fileID: 5833073524844865709}
   dummy: 0
   fireAble: 0

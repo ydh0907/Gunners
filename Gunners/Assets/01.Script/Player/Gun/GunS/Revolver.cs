@@ -4,27 +4,27 @@ using UnityEngine;
 
 public class Revolver : IGun
 {
-    private AudioSource audio;
-
     private void Awake()
     {
         fireAble = true;
         fireRate = 0.7f;
         lastRate = 0;
-        fireSpray = 15f;
+        fireSpray = 12f;
+        fireSound = 0.3f;
         reroadTime = 2;
         bulletSpeed = 32;
         bulletCount = 6;
         bulletPellet = 1;
         bulletDamage = 40;
         bulletMaximum = 6;
-
-        audio = GetComponent<AudioSource>();
+        
+        sr = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
     {
         lastRate = Mathf.Clamp(lastRate + Time.deltaTime, 0, float.MaxValue);
+        sr.sprite.textureRect
     }
 
     public override void Fire()
@@ -50,7 +50,7 @@ public class Revolver : IGun
 
             lastRate = 0f;
 
-            audio.Play();
+            AudioManager.Instance.Play(clip, fireSound);
 
             if (!dummy)
             {

@@ -7,8 +7,9 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance = null;
 
-    [SerializeField] public CharacterListSO CharacterList;
+    [SerializeField] public bool Interpolation = true;
     [SerializeField] public GunListSO GunList;
+    [SerializeField] public CharacterListSO CharacterList;
 
     public Action onMatchingStart = null;
     public Action onMatched = null;
@@ -29,7 +30,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        SoundManager.Instance = gameObject.AddComponent<SoundManager>();
+        gameObject.AddComponent<IOManager>();
         PacketManager.Instance = gameObject.AddComponent<PacketManager>();
         LoadSceneManager.Instance = gameObject.AddComponent<LoadSceneManager>();
         AgentInfoManager.Instance = gameObject.AddComponent<AgentInfoManager>();

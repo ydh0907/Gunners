@@ -30,16 +30,15 @@ public class EnemyDummy : MonoBehaviour
     public bool host;
     public string nickname = "";
 
-    private Animator ani;
     public Rigidbody2D rb;
     private SpriteRenderer sr;
 
     private float delta => Agent.Instance.time;
 
-    Vector3 currentPos;
-    float currentDir;
-    Vector3 pastPos;
-    float pastDir;
+    private Vector3 currentPos;
+    private float currentDir;
+    private Vector3 pastPos;
+    private float pastDir;
 
     private float Z => gun.transform.eulerAngles.z > 180 ? gun.transform.eulerAngles.z - 360f : gun.transform.eulerAngles.z;
 
@@ -76,9 +75,18 @@ public class EnemyDummy : MonoBehaviour
         currentPos.y = y;
         currentDir = angleZ;
 
-        transform.position = pastPos;
-        rb.velocity = (currentPos - pastPos) * (1 / delta);
-        gun.transform.eulerAngles = new Vector3(0, 0, pastDir);
+        if (GameManager.Instance.Interpolation)
+        {
+            transform.position = pastPos;
+            rb.velocity = (currentPos - pastPos) * (1 / delta);
+            gun.transform.eulerAngles = new Vector3(0, 0, pastDir);
+        }
+        else
+        {
+            transform.position = currentPos;
+            rb.velocity = Vector2.zero;
+            gun.transform.eulerAngles = new Vector3(0, 0, currentDir);
+        }
 
         if (Z > 90 || Z < -90)
         {

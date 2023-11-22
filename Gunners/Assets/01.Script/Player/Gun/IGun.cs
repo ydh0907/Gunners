@@ -5,13 +5,17 @@ public abstract class IGun : MonoBehaviour
 {
     [SerializeField] public Transform bullet;
     [SerializeField] public Transform firePos;
+    [SerializeField] public AudioClip clip;
+
     [SerializeField] public Animator ani;
+    [SerializeField] public SpriteRenderer sr;
 
     public bool dummy = false;
     public bool fireAble;
     public float fireRate;
     public float lastRate;
     public float fireSpray;
+    public float fireSound;
     public float reroadTime;
     public float bulletSpeed;
     public ushort bulletCount;

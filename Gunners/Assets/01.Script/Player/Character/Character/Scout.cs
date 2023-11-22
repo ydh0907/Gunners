@@ -5,6 +5,6 @@ public class Scout : ICharacter
         maxHp = 100;
         hp = maxHp;
         armor = 30;
-        speed = 12;
+        speed = 10;
     }
 }
