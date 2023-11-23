@@ -4,7 +4,7 @@ public class Soldier : ICharacter
     {
         maxHp = 150;
         hp = maxHp;
-        armor = 30;
+        armor = 25;
         speed = 7;
     }
 }

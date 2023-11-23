@@ -9,13 +9,13 @@ public class Shotgun : IGun
         fireAble = true;
         fireRate = 0.5f;
         lastRate = 0;
-        fireSpray = 20;
+        fireSpray = 15;
         fireSound = 0.3f;
         reroadTime = 0.5f;
         bulletSpeed = 24;
         bulletCount = 5;
         bulletPellet = 8;
-        bulletDamage = 12;
+        bulletDamage = 10;
         bulletMaximum = 5;
     }
 

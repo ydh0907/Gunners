@@ -1,30 +1,16 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SetGunImage : MonoBehaviour
 {
-    private Image image;
+    private SpriteRenderer sr;
 
     private void Awake()
     {
-        image = GetComponent<Image>();
+        sr = GetComponent<SpriteRenderer>();
     }
 
-    private void OnEnable()
+    private void Update()
     {
-        AgentInfoManager.Instance.OnValueChange += SetImage;
-    }
-
-    private void OnDisable()
-    {
-        AgentInfoManager.Instance.OnValueChange -= SetImage;
-    }
-
-    private void SetImage(CharacterSO character, GunSO gun)
-    {
-        image.sprite = gun.sprite;
+        sr.sprite = AgentInfoManager.Instance.Gun.sprite;
     }
 }

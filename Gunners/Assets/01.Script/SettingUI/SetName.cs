@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SetName : MonoBehaviour
 {
-    private void Start()
+    private void OnEnable()
     {
         StartCoroutine(Wait());
     }
@@ -12,7 +12,6 @@ public class SetName : MonoBehaviour
     private IEnumerator Wait()
     {
         yield return new WaitUntil(() => EnemyDummy.Instance != null);
-        yield return new WaitUntil(() => EnemyDummy.Instance.nickname != "");
 
         TextMeshProUGUI text = GetComponent<TextMeshProUGUI>();
         text.text = text.text + EnemyDummy.Instance.nickname;

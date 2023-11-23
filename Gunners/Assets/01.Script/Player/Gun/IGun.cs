@@ -8,7 +8,6 @@ public abstract class IGun : MonoBehaviour
     [SerializeField] public AudioClip clip;
 
     [SerializeField] public Animator ani;
-    [SerializeField] public SpriteRenderer sr;
 
     public bool dummy = false;
     public bool fireAble;

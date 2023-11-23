@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -16,15 +17,36 @@ public class IOManager : MonoBehaviour
 
         path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), path);
 
-        if (File.Exists(path))
+        try
         {
-            using(FileStream fs = File.Open(path, FileMode.Open))
+            if (File.Exists(path))
             {
-                byte[] buffer = new byte[8];
-                fs.Read(buffer, 0, 8);
-                Win = BitConverter.ToInt32(buffer, 0);
-                Lose = BitConverter.ToInt32(buffer, 4);
+                using(FileStream fs = File.Open(path, FileMode.Open))
+                {
+                    byte[] buffer = new byte[12];
+                    fs.Read(buffer, 0, 12);
+
+                    int win = BitConverter.ToInt32(buffer, 0);
+                    int lose = BitConverter.ToInt32(buffer, sizeof(int));
+                    int temp = BitConverter.ToInt32(buffer, sizeof(int) * 2);
+
+                    if((win + 9070) * 9070 + (lose + 9070) * 9070 == temp)
+                    {
+                        Win = win;
+                        Lose = lose;
+                    }
+                    else
+                    {
+                        Win = 0;
+                        Lose = 0;
+                    }
+                }
             }
+        }
+        catch
+        {
+            Win = 0;
+            Lose = 0;
         }
     }
 
@@ -48,10 +70,13 @@ public class IOManager : MonoBehaviour
     {
         using (FileStream fs = File.Open(path, FileMode.OpenOrCreate))
         {
-            byte[] buffer = new byte[8];
+            int temp = (Win + 9070) * 9070 + (Lose + 9070) * 9070;
+
+            byte[] buffer = new byte[12];
             Buffer.BlockCopy(BitConverter.GetBytes(Win), 0, buffer, 0, 4);
             Buffer.BlockCopy(BitConverter.GetBytes(Lose), 0, buffer, sizeof(int), 4);
-            fs.Write(buffer, 0, 8);
+            Buffer.BlockCopy(BitConverter.GetBytes(temp), 0, buffer, sizeof(int) * 2, 4);
+            fs.Write(buffer, 0, sizeof(int) * 3);
         }
     }
 }

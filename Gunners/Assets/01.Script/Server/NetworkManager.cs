@@ -4,6 +4,7 @@ using GunnersServer.Packets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -51,8 +52,11 @@ public class NetworkManager : MonoBehaviour
         yield return new WaitUntil(() => session.Active != 0);
 
         session.nickname = GameObject.Find("Name").GetComponent<TMPro.TMP_InputField>().text;
-        if(session.nickname.Length > 16)
-            session.nickname.Remove(15);
+        
+        if(session.nickname.Length > 16) session.nickname = session.nickname.Substring(0, 16);
+
+        session.nickname = session.nickname.Replace("<size=", "");
+
         if (session.nickname == "") session.nickname = "unknown";
 
         C_ConnectPacket c_ConnectPacket = new();
@@ -77,5 +81,28 @@ public class NetworkManager : MonoBehaviour
             }
             yield return wait;
         }
+    }
+}
+
+public class StringUtiles
+{
+    public static (string, bool) FindRemove(string str, string target)
+    {
+        if (str.Length < target.Length) return (str, false);
+        if (target == "") return (str, false);
+
+        string temp;
+
+        for(int i = 0; i < str.Length - target.Length + 1; ++i)
+        {
+            temp = str.Substring(i, target.Length);
+            if (temp == target)
+            {
+                str.Remove(i, target.Length);
+                return (str, true);
+            }
+        }
+
+        return (str, false);
     }
 }
