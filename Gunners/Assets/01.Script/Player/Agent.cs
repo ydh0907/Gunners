@@ -27,7 +27,7 @@ public class Agent : MonoBehaviour
 
     public bool host;
 
-    public float time = 0.05f;
+    public float time = 0.1f;
     private float current = 0;
 
     private bool isGround = true;
