@@ -55,7 +55,7 @@ namespace GunnersServer
             if (listener.Listen(10))
                 listener.StartAccept(OnAccepted);
 
-            FlushLoop(20);
+            FlushLoop(10);
         }
 
         static void FlushLoop(int delay)
